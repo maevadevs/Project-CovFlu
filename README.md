@@ -42,6 +42,6 @@ In order to address this challenge, we will use static datasets during the devel
 
 ## Cited Sources
 
-[1] https://trends.google.com/trends/yis/2019/US/
-[2] https://trends.google.com/trends/explore?date=2020-01-01%202020-12-31&geo=US&q=Disney%20Plus,%2Fm%2F01cpyy 
+- [1] https://trends.google.com/trends/yis/2019/US/
+- [2] https://trends.google.com/trends/explore?date=2020-01-01%202020-12-31&geo=US&q=Disney%20Plus,%2Fm%2F01cpyy 
 
