@@ -38,4 +38,4 @@ In order to address this challenge, we will scope this project to only address t
 
 2. The data on Covid-19 is still expanding. As new cases of Covid-19 get discovered every day, the datasets might change as we progress through this project.
 
-In order to address this challenge, we will use static datasets during the development of our application. A follow-up for this project would be to extend it to integrate live data.
+In order to address this challenge, we will use static datasets during the development of our application. All datasets will be limited to what is available up to 12/31/2020. A follow-up for this project would be to extend it to integrate live data.
