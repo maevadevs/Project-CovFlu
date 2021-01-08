@@ -1,0 +1,21 @@
+/* Slider Widget */
+.irs-bar {
+  border-top: 1px solid #d81b60;
+  border-bottom: 1px solid #d81b60;
+  background: #d81b60;
+}
+
+.irs-from, .irs-to, .irs-single {
+  background: #d81b60;
+}
+
+.irs-bar-edge {
+  border: 1px solid #d81b60;
+  background: #d81b60;
+}
+
+/* Dropdown widget */
+.selectize-dropdown, 
+.selectize-dropdown.form-control {
+    color: rgb(205,205,205);
+}
