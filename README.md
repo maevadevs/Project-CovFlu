@@ -24,8 +24,8 @@ On a personal note, I am highly interested in the application of Data Science in
 
 ## Data Questions
 
-1. Which subgroups of the U.S. population is the most impacted by the Covid-19 virus?
-2. Which subgroups of the U.S. population is the most impacted by the influenza virus?
+1. Which subgroups of the U.S. population are the most impacted by the Covid-19 virus?
+2. Which subgroups of the U.S. population are the most impacted by the influenza virus?
 3. How do those two subgroups compare or overlap against each other?
 
 ## Anticipated Issues and Challenges
