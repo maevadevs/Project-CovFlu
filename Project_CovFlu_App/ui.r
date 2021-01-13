@@ -7,6 +7,8 @@ customBadgeColor <- "#d81b60"
 customHeader <- dashboardHeader(
     
     # Changing Theme logo
+    # -------------------
+    
     title = shinyDashboardLogoDIY(
         boldText = "CovFlu",
         mainText = "Project",
@@ -19,6 +21,8 @@ customHeader <- dashboardHeader(
     ),
     
     # Dropdown menu for messages
+    # --------------------------
+    
     dropdownMenu(
         type = "messages", 
         badgeStatus = "success",
@@ -43,6 +47,8 @@ customHeader <- dashboardHeader(
     ),
     
     # Dropdown menu for notifications
+    # -------------------------------
+    
     dropdownMenu(
         
         type = "notifications", 
@@ -74,6 +80,8 @@ customHeader <- dashboardHeader(
     ),
     
     # Dropdown menu for tasks, with progress bar
+    # ------------------------------------------
+    
     dropdownMenu(
         type = "tasks",
         badgeStatus = "danger",
@@ -104,6 +112,33 @@ customHeader <- dashboardHeader(
     )
 )
 
+# Settings Accordion
+# ------------------
+
+# These are setting for the Accordions in the sidebar
+settingsAccordionTitles <- c(
+    "Settings"
+)
+
+# All the widgets for app settings are defined in this Accordion
+settingsAccordionContents <- list(list(
+    
+    # Slider input for number of bins
+    sliderInput(
+        "binscount",
+        "Number of bins:",
+        min = 1,
+        max = 50,
+        value = 30
+    ),
+    
+    # Select Input for the user to choose an island
+    selectInput(
+        "island", 
+        "Select an island", 
+        c("Tenjiou", "Abnet", "Biscounti")
+    )
+))
 
 # Define the Application UI: Using Dashboard Layout
 shinyUI(dashboardPage(
@@ -114,27 +149,21 @@ shinyUI(dashboardPage(
     # Application Header and Navigation Bar
     customHeader,
     
-    # ----- Sidebar Area -----
+    # Sidebar Area
+    # ------------
+    
+    # Define the sidebar
     dashboardSidebar(
-        
-        # Slider input for number of bins
-        sliderInput(
-            "binscount",
-            "Number of bins:",
-            min = 1,
-            max = 50,
-            value = 30
-        ),
-        
-        # Select Input for the user to choose an island
-        selectInput(
-            "island", 
-            "Select an island", 
-            c("Tenjiou", "Abnet", "Biscounti")
-        ),
-        
+
         # The following are list of tabs / Page
         sidebarMenu(
+            
+            menuItem(
+                "About",
+                tabName = "about",
+                icon = icon("question-circle")
+            ),
+            
             menuItem(
                 "Dashboard",
                 tabName = "dashboard",
@@ -163,12 +192,6 @@ shinyUI(dashboardPage(
             ),
 
             menuItem(
-                "About",
-                tabName = "about",
-                icon = icon("question-circle")
-            ),
-
-            menuItem(
                 "Data Source",
                 tabName = "datasource",
                 icon = icon("info-circle")
@@ -179,11 +202,39 @@ shinyUI(dashboardPage(
                 tabName = "contact",
                 icon = icon("address-card")
             )
+        ),
+        
+        # All the widget settings
+        
+        tags$h4(
+            "Visuals Settings",
+            class="widget-settings-title"
+        ),
+        
+        # Slider input for number of bins
+        sliderInput(
+            "binscount",
+            "Number of bins",
+            min = 1,
+            max = 50,
+            value = 30
+        ),
+        
+        # Select Input for the user to choose an island
+        selectInput(
+            "island", 
+            "Select an island", 
+            c("Tenjiou", "Abnet", "Biscounti")
         )
     ),
     
     # ----- Main Area -----
     dashboardBody(
+        
+        # Important: Leave this in here
+        # This fix the issue with the dashboard height
+        # https://github.com/rstudio/shinydashboard/issues/283
+        tags$head(tags$style(HTML("body { min-height: 0 !important; }"))),
         
         # Changing theme
         shinyDashboardThemes(
@@ -201,7 +252,20 @@ shinyUI(dashboardPage(
         # The following are pages controlled from the sidebar
         tabItems(
             
-            # Page 1 - Location
+            # Page 1 - About Page
+            tabItem(
+                tabName = "about",
+                # Start of the fluid body
+                fluidRow(
+                    column(
+                        width=12,
+                        h2("About this App"),
+                        tags$p(HTML("This is a <strong>simple text example</strong> to use as a simple placeholder."))
+                    )
+                )
+            ),
+            
+            # Page 2 - Comparison Dashboard: Covid vs Flu
             tabItem(
                 tabName = "dashboard",
                 # Start of the fluid body
@@ -231,7 +295,7 @@ shinyUI(dashboardPage(
                 )
             ),
             
-            # Page 2 - Focus on Covid-19 Only
+            # Page 3 - Focus on Covid-19 Only
             tabItem(
                 tabName = "covid",
                 # Start of the fluid body
@@ -244,7 +308,7 @@ shinyUI(dashboardPage(
                 )
             ),
             
-            # Page 3 - Focus on Influenza Only
+            # Page 4 - Focus on Influenza Only
             tabItem(
                 tabName = "influenza",
                 # Start of the fluid body
@@ -252,19 +316,6 @@ shinyUI(dashboardPage(
                     column(
                         width=12,
                         h2("Influenza Focus"),
-                        tags$p(HTML("This is a <strong>simple text example</strong> to use as a simple placeholder."))
-                    )
-                )
-            ),
-            
-            # Page 4 - About Page
-            tabItem(
-                tabName = "about",
-                # Start of the fluid body
-                fluidRow(
-                    column(
-                        width=12,
-                        h2("About this App"),
                         tags$p(HTML("This is a <strong>simple text example</strong> to use as a simple placeholder."))
                     )
                 )

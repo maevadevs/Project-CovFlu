@@ -40,3 +40,6 @@ vignettes/*.pdf
 
 # Environment Secrets
 *.env
+
+# Ignore the csv source data for now because of the large files
+Project_CovFlu_App/data/breakdown

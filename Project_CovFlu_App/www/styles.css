@@ -19,3 +19,15 @@
 .selectize-dropdown.form-control {
     color: rgb(205,205,205);
 }
+
+/* Widget Settgins Title */
+.widget-settings-title {
+  padding: 12px;
+  padding-bottom: 0; 
+  border-top: solid 1px rgb(70, 80, 90);
+}
+
+/* Horizontal Lines */
+hr {
+  color: red;
+}
