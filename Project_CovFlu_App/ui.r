@@ -115,30 +115,30 @@ customHeader <- dashboardHeader(
 # Settings Accordion
 # ------------------
 
-# These are setting for the Accordions in the sidebar
-settingsAccordionTitles <- c(
-    "Settings"
-)
-
-# All the widgets for app settings are defined in this Accordion
-settingsAccordionContents <- list(list(
-    
-    # Slider input for number of bins
-    sliderInput(
-        "binscount",
-        "Number of bins:",
-        min = 1,
-        max = 50,
-        value = 30
-    ),
-    
-    # Select Input for the user to choose an island
-    selectInput(
-        "island", 
-        "Select an island", 
-        c("Tenjiou", "Abnet", "Biscounti")
-    )
-))
+# # These are setting for the Accordions in the sidebar
+# settingsAccordionTitles <- c(
+#     "Settings"
+# )
+# 
+# # All the widgets for app settings are defined in this Accordion
+# settingsAccordionContents <- list(list(
+#     
+#     # Slider input for number of bins
+#     sliderInput(
+#         "binscount",
+#         "Number of bins:",
+#         min = 1,
+#         max = 50,
+#         value = 30
+#     ),
+#     
+#     # Select Input for the user to choose an island
+#     selectInput(
+#         "island", 
+#         "Select an island", 
+#         c("Tenjiou", "Abnet", "Biscounti")
+#     )
+# ))
 
 # Define the Application UI: Using Dashboard Layout
 shinyUI(dashboardPage(
@@ -211,21 +211,55 @@ shinyUI(dashboardPage(
             class="widget-settings-title"
         ),
         
-        # Slider input for number of bins
-        sliderInput(
-            "binscount",
-            "Number of bins",
-            min = 1,
-            max = 50,
-            value = 30
+        # Dropdown Select for Correlation Variables
+        selectizeInput(
+            "covid19Dimensions",
+            "Covid-19 Dimensions",
+            Covid19Dimensions,
+            selected=c(),
+            multiple=TRUE,
+            options=list(maxItems=4)
         ),
         
-        # Select Input for the user to choose an island
+        # Month Selection
         selectInput(
-            "island", 
-            "Select an island", 
-            c("Tenjiou", "Abnet", "Biscounti")
+            "covid19CaseMonth",
+            "Month for Covid-19 Data",
+            choices=month_name,
+            selected="December"
         )
+        
+        # Date range 
+        # dateRangeInput(
+        #     "covid19CaseDateRange",
+        #     "Date Range for Covid-19 Data",
+        #     start = as.Date(covid19CaseSurveillance_mindate),
+        #     end = as.Date(covid19CaseSurveillance_maxdate),
+        #     min = as.Date(covid19CaseSurveillance_mindate),
+        #     max = as.Date(covid19CaseSurveillance_maxdate),
+        #     format = "yyyy-mm-dd",
+        #     startview = "month",
+        #     weekstart = 0,
+        #     language = "en",
+        #     separator = " to ",
+        #     width = NULL,
+        #     autoclose = TRUE
+        # )
+        
+        # sliderInput(
+        #     "binscount",
+        #     "Number of bins",
+        #     min = 1,
+        #     max = 50,
+        #     value = 30
+        # ),
+        
+        # Select Input for the user to choose an island
+        # selectInput(
+        #     "island", 
+        #     "Select an island", 
+        #     c("Tenjiou", "Abnet", "Biscounti")
+        # )
     ),
     
     # ----- Main Area -----
@@ -274,8 +308,10 @@ shinyUI(dashboardPage(
                     column(
                         width = 6, 
                         tags$div(
-                            HTML('<h4 class="plotTitle">This Is A Plot Title</h4>'),
-                            plotlyOutput('decadeCensus')
+                            #HTML('<h4 class="plotTitle">This Is A Plot Title</h4>'),
+                            tableOutput('covid19CaseSurveillance_scatterplot')
+                            #plotlyOutput('covid19CaseSurveillance_scatterplot')
+                            # textOutput('covid19CaseSurveillance_scatterplot')
                         )
                     ),
                     column(
