@@ -8,6 +8,13 @@
 # -------
 
 library(tidyverse)
+library(dplyr)
+library(shiny)
+library(shinydashboard)
+library(plotly)
+library(ggplot2)
+library(dashboardthemes)
+library(janitor)
 
 # Setups and variables
 # --------------------
@@ -25,19 +32,19 @@ covid19Surveillance <- read.csv(paste0(csv_src, "04-data.cdc.gov/deaths/COVID-19
 # ------------------------------
 
 clean_df <- covid19Surveillance %>% 
-  # Rename the columns appropriately
-  rename(case_earliest_date = cdc_case_earliest_dt,
-         positive_specimen_earliest_date = pos_spec_dt,
-         symptom_onset_date = onset_dt,
-         is_hospitalized = hosp_yn,
-         is_icu = icu_yn,
-         is_death = death_yn,
-         with_underlying_conditions = medcond_yn) %>%
+  # Remove unneeded column
+  select(
+    -cdc_report_dt,# Deprecated, use new cdc_case_earliest_dt instead
+    -pos_spec_dt,
+    -onset_dt,
+    -medcond_yn) %>% 
   # Only keep the range for the age group
   separate(col = age_group,
-           into = c("age_group", "temp"),
+           into = c("Age.Group", "temp"),
            sep = " Y",
            remove = TRUE) %>%
+  # Remove unneeded column
+  select(-temp) %>% # temporary column from splitting age_group
   # Normalize race and ethnicity values
   mutate(
     clean_race_ethnicity = case_when(
@@ -49,13 +56,21 @@ clean_df <- covid19Surveillance %>%
   ) %>%
   # Split combined race and ethnicity values to separate
   separate(col = clean_race_ethnicity,
-           into = c("race", "ethnicity"),
+           into = c("Race", "Ethnicity"),
            sep = ", ",
            remove = TRUE) %>%
-  # Remove unneeded column
-  select(-cdc_report_dt) %>% # Deprecated, use new cdc_case_earliest_dt instead
-  select(-temp) %>% # temporary column from splitting age_group
-  select(-race_ethnicity_combined) # Left-over from cleaning race and ethnicity
+  # Remove unneeded columns
+  select(
+    -race_ethnicity_combined, # Left-over from cleaning race and ethnicity
+    -Ethnicity # We are only going to focus on Race only
+  ) %>% 
+  # Rename the columns appropriately
+  rename(Case.Earliest.Date = cdc_case_earliest_dt,
+         Confirmation.Status = current_status,
+         Gender = sex,
+         Hospitalization = hosp_yn,
+         ICU = icu_yn,
+         Death = death_yn)
 
 # Export cleaned data
 # -------------------
@@ -64,142 +79,143 @@ clean_df <- covid19Surveillance %>%
 # We are going to aggregate
 
 df_to_export <- clean_df %>%
-  select(case_earliest_date:ethnicity) %>%
-  group_by(case_earliest_date, 
-           positive_specimen_earliest_date,
-           symptom_onset_date,
-           current_status,
-           sex,
-           age_group,
-           is_hospitalized,
-           is_icu,
-           is_death,
-           with_underlying_conditions,
-           race,
-           ethnicity) %>%
-  summarise(n = n()) %>%
+  select(Case.Earliest.Date:Race) %>%
+  group_by(Case.Earliest.Date, 
+           Confirmation.Status,
+           Gender,
+           Age.Group,
+           Hospitalization,
+           ICU,
+           Death,
+           Race) %>%
+  summarise(Count = n()) %>%
   ungroup()
 
+# Fix some values for Race
+df_to_export$Race[df_to_export$Race == "American Indian/Alaska Native"] <- "AIAN"
+df_to_export$Race[df_to_export$Race == "Black"] <- "African American"
+df_to_export$Race[df_to_export$Race == "Hispanic/Latino"] <- "Latino"
+df_to_export$Race[df_to_export$Race == "Multiple/Other"] <- "Multiracial/Other"
+df_to_export$Race[df_to_export$Race == "Native Hawaiian/Other Pacific Islander"] <- "NHPI"
+df_to_export$Race[df_to_export$Race == "White"] <- "Caucasian"
+
+
+
+
+
+
+
+
+
+
 # Now Exporting
-# Split into 4 files to meet requirement <100Mb
+# *************
+# Split into monthly files to meet requirement <100Mb
 
-df_to_export_jan <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-01-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-01-31")))
-
-df_to_export_feb <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-02-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-02-29")))
-
-df_to_export_mar <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-03-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-03-31")))
-
-df_to_export_apr <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-04-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-04-30")))
-
-df_to_export_may <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-05-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-05-31")))
-
-df_to_export_jun <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-06-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-06-30")))
-
-df_to_export_jul <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-07-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-07-31")))
-
-df_to_export_aug <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-08-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-08-31")))
-
-df_to_export_sep <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-09-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-09-30")))
-
-df_to_export_oct <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-10-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-10-31")))
-
-df_to_export_nov <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-11-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-11-30")))
-
-df_to_export_dec <- df_to_export %>%
-  select(case_earliest_date:n) %>%
-  filter(as.Date(case_earliest_date) >= as.Date(str_interp("2020-12-01")) & as.Date(case_earliest_date) <= as.Date(str_interp("2020-12-31")))
-
-# Export each month-basis subset
-df_to_export_jan %>%
+# January
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-01-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-01-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-01.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-01.csv")
   )
 
-df_to_export_feb %>%
+# February
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-02-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-02-29"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-02.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-02.csv")
   )
 
-df_to_export_mar %>%
+# March
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-03-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-03-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-03.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-03.csv")
   )
 
-df_to_export_apr %>%
+# April
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-04-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-04-30"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-04.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-04.csv")
   )
 
-df_to_export_may %>%
+# Mai
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-05-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-05-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-05.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-05.csv")
   )
 
-df_to_export_jun %>%
+# June
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-06-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-06-30"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-06.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-06.csv")
   )
 
-df_to_export_jul %>%
+# July
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-07-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-07-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-07.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-07.csv")
   )
 
-df_to_export_aug %>%
+# August
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-08-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-08-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-08.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-08.csv")
   )
 
-df_to_export_sep %>%
+# September
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-09-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-09-30"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-09.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-09.csv")
   )
 
-df_to_export_oct %>%
+# October
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-10-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-10-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-10.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-10.csv")
   )
 
-df_to_export_nov %>%
+# November
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-11-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-11-30"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-11.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-11.csv")
   )
 
-df_to_export_dec %>%
+# December
+df_to_export %>%
+  select(Case.Earliest.Date:Count) %>%
+  filter(as.Date(Case.Earliest.Date) >= as.Date(str_interp("2020-12-01")) & as.Date(Case.Earliest.Date) <= as.Date(str_interp("2020-12-31"))) %>%
   write.csv(
     row.names = FALSE,
-    paste0(csv_dest, "covid19-case-surveillance-aggregated-12.csv")
+    paste0(csv_dest, "covid19-case-surv-aggregated-12.csv")
   )

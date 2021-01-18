@@ -31,3 +31,8 @@
 hr {
   color: red;
 }
+
+/* DTTables */
+a.paginate_button {
+  color: #cdcdcd !important;
+}
