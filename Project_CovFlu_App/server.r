@@ -28,24 +28,21 @@ shinyServer(function(input, output) {
   # Filtering covid-19 data based on the month widget input
   # -------------------------------------------------------
   covid19CaseSurv_month_filtered <- reactive({
-    
-    month_df = NULL
-    
-    if (input$covid19CaseMonth == "January") { month_df <- covid19CaseSurv01 }
-    else if (input$covid19CaseMonth == "February") { month_df <- covid19CaseSurv02 }
-    else if (input$covid19CaseMonth == "March") { month_df <- covid19CaseSurv03 }
-    else if (input$covid19CaseMonth == "April") { month_df <- covid19CaseSurv04 }
-    else if (input$covid19CaseMonth == "May") { month_df <- covid19CaseSurv05 }
-    else if (input$covid19CaseMonth == "June") { month_df <- covid19CaseSurv06 }
-    else if (input$covid19CaseMonth == "July") { month_df <- covid19CaseSurv07 }
-    else if (input$covid19CaseMonth == "August") { month_df <- covid19CaseSurv08 }
-    else if (input$covid19CaseMonth == "September") { month_df <- covid19CaseSurv09 }
-    else if (input$covid19CaseMonth == "October") { month_df <- covid19CaseSurv10 }
-    else if (input$covid19CaseMonth == "November") { month_df <- covid19CaseSurv11 }
-    else if (input$covid19CaseMonth == "December") { month_df <- covid19CaseSurv12 }
-
-    month_df %>%
-      data.frame()
+    switch(
+      input$covid19CaseMonth,
+      "January" = covid19CaseSurv01,
+      "February" = covid19CaseSurv02,
+      "March" = covid19CaseSurv03,
+      "April" = covid19CaseSurv04,
+      "May" = covid19CaseSurv05,
+      "June" = covid19CaseSurv06,
+      "July" = covid19CaseSurv07,
+      "August" = covid19CaseSurv08,
+      "September" = covid19CaseSurv09,
+      "October" = covid19CaseSurv10,
+      "November" = covid19CaseSurv11,
+      "December" = covid19CaseSurv12
+    )
   })
   
   
@@ -56,7 +53,6 @@ shinyServer(function(input, output) {
   fluDeaths2019CaseMonth_filtered <- reactive({
     fluDeaths2019Monthly %>%
       filter(Death.Month == input$fluDeaths2019CaseMonth)
-      # %>% data.frame()
   })
   
   
@@ -72,15 +68,10 @@ shinyServer(function(input, output) {
   # ---------------------------------
   all_covid_cases_data_age <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      group_by(Age.Group) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Age.Group)
+      covid_group_summarise_mutate(
+        Age.Group, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -90,16 +81,11 @@ shinyServer(function(input, output) {
   # ---------------------------------------
   confirmed_covid_cases_data_age <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Confirmation.Status == "Laboratory-confirmed case") %>%
-      group_by(Age.Group) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Age.Group)
+      covid_filter_group_summarise_mutate(
+        Confirmation.Status, "Laboratory-confirmed case", # filter
+        Age.Group, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -109,16 +95,11 @@ shinyServer(function(input, output) {
   # ---------------------------------------------
   hospitalization_covid_cases_data_age <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Hospitalization == "Yes") %>%
-      group_by(Age.Group) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Age.Group)
+      covid_filter_group_summarise_mutate(
+        Hospitalization, "Yes", # filter
+        Age.Group, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -128,16 +109,11 @@ shinyServer(function(input, output) {
   # ---------------------------------
   icu_covid_cases_data_age <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(ICU == "Yes") %>%
-      group_by(Age.Group) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Age.Group)
+      covid_filter_group_summarise_mutate(
+        ICU, "Yes", # filter
+        Age.Group, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -147,16 +123,11 @@ shinyServer(function(input, output) {
   # -----------------------------------
   death_covid_cases_data_age <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Death == "Yes") %>%
-      group_by(Age.Group) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Age.Group)
+      covid_filter_group_summarise_mutate(
+        Death, "Yes", # filter
+        Age.Group, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -166,15 +137,10 @@ shinyServer(function(input, output) {
   # ------------------------------
   death_flu_cases_data_age <- reactive({
     fluDeaths2019CaseMonth_filtered() %>%
-      group_by(Age.Group) %>%
-      summarise(
-        Count=sum(Death, na.rm = TRUE)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Age.Group)
+      flu_group_summarise_mutate(
+        Age.Group, # group_by / arrange
+        Death # summarise sum
+      )
   })
   
   
@@ -190,15 +156,10 @@ shinyServer(function(input, output) {
   # ------------------------------------
   all_covid_cases_data_gender <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      group_by(Gender) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Gender)
+      covid_group_summarise_mutate(
+        Gender, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -208,16 +169,11 @@ shinyServer(function(input, output) {
   # ------------------------------------------
   confirmed_covid_cases_data_gender <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Confirmation.Status == "Laboratory-confirmed case") %>%
-      group_by(Gender) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Gender)
+      covid_filter_group_summarise_mutate(
+        Confirmation.Status, "Laboratory-confirmed case", # filter
+        Gender, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -227,16 +183,11 @@ shinyServer(function(input, output) {
   # ------------------------------------------------
   hospitalization_covid_cases_data_gender <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Hospitalization == "Yes") %>%
-      group_by(Gender) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Gender)
+      covid_filter_group_summarise_mutate(
+        Hospitalization, "Yes", # filter
+        Gender, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -246,16 +197,11 @@ shinyServer(function(input, output) {
   # ------------------------------------
   icu_covid_cases_data_gender <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(ICU == "Yes") %>%
-      group_by(Gender) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Gender)
+      covid_filter_group_summarise_mutate(
+        ICU, "Yes", # filter
+        Gender, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -265,16 +211,11 @@ shinyServer(function(input, output) {
   # --------------------------------------
   death_covid_cases_data_gender <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Death == "Yes") %>%
-      group_by(Gender) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Gender)
+      covid_filter_group_summarise_mutate(
+        Death, "Yes", # filter
+        Gender, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -284,15 +225,10 @@ shinyServer(function(input, output) {
   # ---------------------------------
   death_flu_cases_data_gender <- reactive({
     fluDeaths2019CaseMonth_filtered() %>%
-      group_by(Gender) %>%
-      summarise(
-        Count=sum(Death, na.rm = TRUE)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Gender)
+      flu_group_summarise_mutate(
+        Gender, # group_by / arrange
+        Death # summarise sum
+      )
   })
   
   
@@ -308,15 +244,10 @@ shinyServer(function(input, output) {
   # ----------------------------------
   all_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      group_by(Race) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Race)
+      covid_group_summarise_mutate(
+        Race, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -326,16 +257,11 @@ shinyServer(function(input, output) {
   # ----------------------------------------
   confirmed_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Confirmation.Status == "Laboratory-confirmed case") %>%
-      group_by(Race) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Race)
+      covid_filter_group_summarise_mutate(
+        Confirmation.Status, "Laboratory-confirmed case", # filter
+        Race, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -345,16 +271,11 @@ shinyServer(function(input, output) {
   # ----------------------------------------------
   hospitalization_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Hospitalization == "Yes") %>%
-      group_by(Race) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Race)
+      covid_filter_group_summarise_mutate(
+        Hospitalization, "Yes", # filter
+        Race, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -364,16 +285,11 @@ shinyServer(function(input, output) {
   # ----------------------------------
   icu_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(ICU == "Yes") %>%
-      group_by(Race) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Race)
+      covid_filter_group_summarise_mutate(
+        ICU, "Yes", # filter
+        Race, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -383,16 +299,11 @@ shinyServer(function(input, output) {
   # ------------------------------------
   death_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      filter(Death == "Yes") %>%
-      group_by(Race) %>%
-      summarise(
-        Count=sum(Count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Race)
+      covid_filter_group_summarise_mutate(
+        Death, "Yes", # filter
+        Race, # group_by / arrange
+        Count # summarise sum
+      )
   })
   
   
@@ -402,15 +313,10 @@ shinyServer(function(input, output) {
   # -------------------------------
   death_flu_cases_data_race <- reactive({
     fluDeaths2019CaseMonth_filtered() %>%
-      group_by(Race) %>%
-      summarise(
-        Count=sum(Death, na.rm = TRUE)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        Percent=round(Count / sum(Count) * 100, 2)
-      ) %>%
-      arrange(Race)
+      flu_group_summarise_mutate(
+        Race, # group_by / arrange
+        Death # summarise sum
+      )
   })
   
   
@@ -510,39 +416,7 @@ shinyServer(function(input, output) {
       )
     
     # Finally, add the layout of the plot
-    plot %>%
-      layout(
-        yaxis=list(
-          title="",
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd")),
-          gridcolor = toRGB("gray50"),
-          gridwidth = 1
-        ),
-        xaxis=list(
-          title="Age Group", 
-          tickangle=-45,
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd"))
-        ),
-        # showlegend=FALSE,
-        legend = list(
-          orientation = "v", # show entries horizontally
-          # xanchor = "center", # use center of legend as anchor
-          # x = 0.5,
-          font = list(color=c("#cdcdcd"))
-        ),
-        plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
-        paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
-      )
+    plot %>% add_plot_layout("Age Group") # xaxis title
   })
   
   
@@ -570,39 +444,8 @@ shinyServer(function(input, output) {
     )
     
     # Finally, add the layout of the plot
-    plot %>%
-      layout(
-        yaxis=list(
-          title="",
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd")),
-          gridcolor = toRGB("gray50"),
-          gridwidth = 1
-        ),
-        xaxis=list(
-          title="Age Group", 
-          tickangle=-45,
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd"))
-        ),
-        # showlegend=FALSE,
-        legend = list(
-          orientation = "v", # show entries horizontally
-          # xanchor = "center", # use center of legend as anchor
-          # x = 0.5,
-          font = list(color=c("#cdcdcd"))
-        ),
-        plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
-        paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
-      )
+    # Custom function in global
+    plot %>% add_plot_layout("Age Group") # xaxis title
   })
   
   
@@ -764,39 +607,8 @@ shinyServer(function(input, output) {
       )
     
     # Finally, add the layout of the plot
-    plot %>%
-      layout(
-        yaxis=list(
-          title="",
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd")),
-          gridcolor = toRGB("gray50"),
-          gridwidth = 1
-        ),
-        xaxis=list(
-          title="Gender", 
-          tickangle=-45,
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd"))
-        ),
-        # showlegend=FALSE,
-        legend = list(
-          orientation = "v", # show entries horizontally
-          # xanchor = "center", # use center of legend as anchor
-          # x = 0.5,
-          font = list(color=c("#cdcdcd"))
-        ),
-        plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
-        paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
-      )
+    # Custom function in global
+    plot %>% add_plot_layout("Gender") # xaxis title
   })
   
   
@@ -824,39 +636,8 @@ shinyServer(function(input, output) {
     )
     
     # Finally, add the layout of the plot
-    plot %>%
-      layout(
-        yaxis=list(
-          title="",
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd")),
-          gridcolor = toRGB("gray50"),
-          gridwidth = 1
-        ),
-        xaxis=list(
-          title="Gender", 
-          tickangle=-45,
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd"))
-        ),
-        # showlegend=FALSE,
-        legend = list(
-          orientation = "v", # show entries horizontally
-          # xanchor = "center", # use center of legend as anchor
-          # x = 0.5,
-          font = list(color=c("#cdcdcd"))
-        ),
-        plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
-        paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
-      )
+    # Custom function in global
+    plot %>% add_plot_layout("Gender") # xaxis title
   })
   
   
@@ -1018,39 +799,8 @@ shinyServer(function(input, output) {
       )
     
     # Finally, add the layout of the plot
-    plot %>%
-      layout(
-        yaxis=list(
-          title="",
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd")),
-          gridcolor = toRGB("gray50"),
-          gridwidth = 1
-        ),
-        xaxis=list(
-          title="Race", 
-          tickangle=-45,
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd"))
-        ),
-        # showlegend=FALSE,
-        legend = list(
-          orientation = "v", # show entries horizontally
-          # xanchor = "center", # use center of legend as anchor
-          # x = 0.5,
-          font = list(color=c("#cdcdcd"))
-        ),
-        plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
-        paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
-      )
+    # Custom function in global
+    plot %>% add_plot_layout("Race") # xaxis title
   })
   
   
@@ -1078,39 +828,8 @@ shinyServer(function(input, output) {
     )
     
     # Finally, add the layout of the plot
-    plot %>%
-      layout(
-        yaxis=list(
-          title="",
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd")),
-          gridcolor = toRGB("gray50"),
-          gridwidth = 1
-        ),
-        xaxis=list(
-          title="Gender", 
-          tickangle=-45,
-          zerolinecolor = toRGB("#cdcdcd"),
-          zerolinewidth = 1,
-          linecolor = toRGB("#cdcdcd"),
-          linewidth = 1,
-          tickfont=list(color=c("#cdcdcd")),
-          titlefont = list(color=c("#cdcdcd"))
-        ),
-        # showlegend=FALSE,
-        legend = list(
-          orientation = "v", # show entries horizontally
-          # xanchor = "center", # use center of legend as anchor
-          # x = 0.5,
-          font = list(color=c("#cdcdcd"))
-        ),
-        plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
-        paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
-      )
+    # Custom function in global
+    plot %>% add_plot_layout("Race") # xaxis title
   })
   
   
@@ -1183,7 +902,47 @@ shinyServer(function(input, output) {
   
   
   
+  # Get the month from the user selection
+  # Because of Single ID Requirement, this has to be individualize
+  # TODO: Re-write this code better
+  output$selectedCovidMonth1 <- renderText({
+    input$covid19CaseMonth
+  })
+  output$selectedCovidMonth2 <- renderText({
+    input$covid19CaseMonth
+  })
+  output$selectedCovidMonth3 <- renderText({
+    input$covid19CaseMonth
+  })
+  output$selectedCovidMonth4 <- renderText({
+    input$covid19CaseMonth
+  })
+  output$selectedCovidMonth5 <- renderText({
+    input$covid19CaseMonth
+  })
+  output$selectedCovidMonth6 <- renderText({
+    input$covid19CaseMonth
+  })
   
+  
+  output$selectedFluMonth1 <- renderText({
+    input$fluDeaths2019CaseMonth
+  })
+  output$selectedFluMonth2 <- renderText({
+    input$fluDeaths2019CaseMonth
+  })
+  output$selectedFluMonth3 <- renderText({
+    input$fluDeaths2019CaseMonth
+  })
+  output$selectedFluMonth4 <- renderText({
+    input$fluDeaths2019CaseMonth
+  })
+  output$selectedFluMonth5 <- renderText({
+    input$fluDeaths2019CaseMonth
+  })
+  output$selectedFluMonth6 <- renderText({
+    input$fluDeaths2019CaseMonth
+  })
   
   
   
@@ -1287,51 +1046,6 @@ shinyServer(function(input, output) {
   # 
   
   
-  
-  
-  
-  
-  # Get the month from the user selection
-  # Because of Single ID Requirement, this has to be individualize
-  # TODO: Re-write this code better
-  output$selectedCovidMonth1 <- renderText({
-    input$covid19CaseMonth
-  })
-  output$selectedCovidMonth2 <- renderText({
-    input$covid19CaseMonth
-  })
-  output$selectedCovidMonth3 <- renderText({
-    input$covid19CaseMonth
-  })
-  output$selectedCovidMonth4 <- renderText({
-    input$covid19CaseMonth
-  })
-  output$selectedCovidMonth5 <- renderText({
-    input$covid19CaseMonth
-  })
-  output$selectedCovidMonth6 <- renderText({
-    input$covid19CaseMonth
-  })
-  
-  
-  output$selectedFluMonth1 <- renderText({
-    input$fluDeaths2019CaseMonth
-  })
-  output$selectedFluMonth2 <- renderText({
-    input$fluDeaths2019CaseMonth
-  })
-  output$selectedFluMonth3 <- renderText({
-    input$fluDeaths2019CaseMonth
-  })
-  output$selectedFluMonth4 <- renderText({
-    input$fluDeaths2019CaseMonth
-  })
-  output$selectedFluMonth5 <- renderText({
-    input$fluDeaths2019CaseMonth
-  })
-  output$selectedFluMonth6 <- renderText({
-    input$fluDeaths2019CaseMonth
-  })
   
   # Output: Covid-19 Surveillance Scatterplot
   # output$covid19CaseSurveillance_scatterplot <- renderPlotly({
