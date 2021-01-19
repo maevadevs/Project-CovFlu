@@ -27,12 +27,12 @@
   border-top: solid 1px rgb(70, 80, 90);
 }
 
-/* Horizontal Lines */
-hr {
-  color: red;
-}
-
 /* DTTables */
 a.paginate_button {
   color: #cdcdcd !important;
+}
+
+/* Pages Info */
+div.bodyTextContainer {
+  padding: 1em; !important
 }

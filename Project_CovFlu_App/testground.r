@@ -162,3 +162,18 @@ plot <- plot %>%
     plot_bgcolor=toRGB("#2d3741"), # Customize the background color of the plot
     paper_bgcolor=toRGB("#2d3741") # Customize the background color of the margin
   )
+
+
+
+fluDeaths2019Monthly %>%
+  filter(Death.Month == "January") %>%
+  group_by(Age.Group) %>%
+  summarise(
+    Count=sum(Death, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    Percent=round(Count / sum(Count) * 100, 2)
+  ) %>%
+  arrange(Age.Group) %>%
+  View()

@@ -33,6 +33,8 @@ covid19CaseSurv10 <- read.csv("data/covid19-case-surv-aggregated-10.csv")
 covid19CaseSurv11 <- read.csv("data/covid19-case-surv-aggregated-11.csv")
 covid19CaseSurv12 <- read.csv("data/covid19-case-surv-aggregated-12.csv")
 
+fluDeaths2019Monthly <- read.csv("data/deaths-by-influenza-and-pneumonia-2019-monthly.csv")
+
 # Variables from covid19CaseSurv_all
 # All the datasets have the same columns
 # Used for dropdown select in ui
@@ -56,6 +58,8 @@ month_name <- c("January", "February", "March", "April", "May", "June", "July", 
 #     count=sum(n)
 #   ) %>%
 #   adorn_totals("row")
+
+
 
 # Helper Functions
 # ----------------

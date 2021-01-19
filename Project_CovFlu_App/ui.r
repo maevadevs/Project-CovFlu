@@ -67,97 +67,97 @@ shinyUI(dashboardPage(
             badgeTextSize = 2,
             badgeBackColor = customBadgeColor,
             badgeBorderRadius = 3
-        ),
+        )
         
         # Dropdown menu for messages
         # --------------------------
         
-        dropdownMenu(
-            type = "messages", 
-            badgeStatus = "success",
-            
-            messageItem(
-                "Support Team",
-                "This is the content of a message.",
-                time = "5 mins"
-            ),
-            
-            messageItem(
-                "Support Team",
-                "This is the content of another message.",
-                time = "2 hours"
-            ),
-            
-            messageItem(
-                "New User",
-                "Can I get some help?",
-                time = "Today"
-            )
-        ),
+        # dropdownMenu(
+        #     type = "messages", 
+        #     badgeStatus = "success",
+        #     
+        #     messageItem(
+        #         "Support Team",
+        #         "This is the content of a message.",
+        #         time = "5 mins"
+        #     ),
+        #     
+        #     messageItem(
+        #         "Support Team",
+        #         "This is the content of another message.",
+        #         time = "2 hours"
+        #     ),
+        #     
+        #     messageItem(
+        #         "New User",
+        #         "Can I get some help?",
+        #         time = "Today"
+        #     )
+        # ),
         
         # Dropdown menu for notifications
         # -------------------------------
         
-        dropdownMenu(
-            
-            type = "notifications", 
-            badgeStatus = "warning",
-            notificationItem(
-                icon = icon("users"),
-                status = "info",
-                "5 new members joined today"
-            ),
-            
-            notificationItem(
-                icon = icon("warning"),
-                status = "danger",
-                "Resource usage near limit."
-            ),
-            
-            notificationItem(
-                icon = icon("shopping-cart", lib = "glyphicon"),
-                status = "success", 
-                "25 sales made"
-            ),
-            
-            notificationItem(
-                icon = icon("user", lib = "glyphicon"),
-                status = "danger", 
-                "You changed your username"
-            )
-        ),
+        # dropdownMenu(
+        #     
+        #     type = "notifications", 
+        #     badgeStatus = "warning",
+        #     notificationItem(
+        #         icon = icon("users"),
+        #         status = "info",
+        #         "5 new members joined today"
+        #     ),
+        #     
+        #     notificationItem(
+        #         icon = icon("warning"),
+        #         status = "danger",
+        #         "Resource usage near limit."
+        #     ),
+        #     
+        #     notificationItem(
+        #         icon = icon("shopping-cart", lib = "glyphicon"),
+        #         status = "success", 
+        #         "25 sales made"
+        #     ),
+        #     
+        #     notificationItem(
+        #         icon = icon("user", lib = "glyphicon"),
+        #         status = "danger", 
+        #         "You changed your username"
+        #     )
+        # ),
         
         # Dropdown menu for tasks, with progress bar
         # ------------------------------------------
         
-        dropdownMenu(
-            type = "tasks",
-            badgeStatus = "danger",
-            
-            taskItem(
-                value = 20, 
-                color = "aqua",
-                "Refactor code"
-            ),
-            
-            taskItem(
-                value = 40,
-                color = "green",
-                "Design new layout"
-            ),
-            
-            taskItem(
-                value = 60, 
-                color = "yellow",
-                "Another task"
-            ),
-            
-            taskItem(
-                value = 80, 
-                color = "red",
-                "Write documentation"
-            )
-        )
+        # dropdownMenu(
+        #     type = "tasks",
+        #     badgeStatus = "danger",
+        #     
+        #     taskItem(
+        #         value = 20, 
+        #         color = "aqua",
+        #         "Refactor code"
+        #     ),
+        #     
+        #     taskItem(
+        #         value = 40,
+        #         color = "green",
+        #         "Design new layout"
+        #     ),
+        #     
+        #     taskItem(
+        #         value = 60, 
+        #         color = "yellow",
+        #         "Another task"
+        #     ),
+        #     
+        #     taskItem(
+        #         value = 80, 
+        #         color = "red",
+        #         "Write documentation"
+        #     )
+        # )
     ),
     # --- End of DASHBOARD HEADER ---
     
@@ -215,6 +215,13 @@ shinyUI(dashboardPage(
                 tabName = "geographicalDashboard",
                 icon = icon("dashboard")
             ),
+            
+            # Link to the Correlation Dashboard
+            menuItem(
+                "Correlations",
+                tabName = "correlationDashboard",
+                icon = icon("dashboard")
+            ),
 
             # Link to the Data Source Page
             menuItem(
@@ -249,15 +256,23 @@ shinyUI(dashboardPage(
             selected="December"
         ),
         
-        # Dropdown Select for Covid-19 Correlation Variables
-        selectizeInput(
-            "covid19Dimensions",
-            "Covid-19 Dimensions",
-            Covid19Dimensions,
-            selected=c(),
-            multiple=TRUE,
-            options=list(maxItems=4)
+        # Month Selection for Flu Variables
+        selectInput(
+            "fluDeaths2019CaseMonth",
+            "2019 Month for Influenza Data",
+            choices=month_name,
+            selected="December"
         )
+        
+        # Dropdown Select for Covid-19 Correlation Variables
+        # selectizeInput(
+        #     "covid19Dimensions",
+        #     "Covid-19 Dimensions",
+        #     Covid19Dimensions,
+        #     selected=c(),
+        #     multiple=TRUE,
+        #     options=list(maxItems=4)
+        # )
         
         # # Date range selection for Covid-19 variables
         # dateRangeInput(
@@ -324,17 +339,39 @@ shinyUI(dashboardPage(
                     # Page Title
                     column(
                         width=12,
-                        h2("About this Shiny App")
+                        h2("About This App")
                     ),
                     
                     # Page Contents
                     box(
                         status = "info",
                         width=12,
-                        tags$p(HTML("This is a <strong>simple text example
-                                    </strong> to use as a simple placeholder.
-                                    Further contents will go here in the near
-                                    future."))
+                        br(),
+                        br(),
+                        tags$p(HTML("<p>Throughout the year 2020 and beyond, the term <em>Covid-19</em> has certainly become the most familiar term to our ears.
+                                    It is astonishing when we think that back in 2019, hardly anyone has ever heard of the term <em>Covid-19</em> or even knew what a Coronavirus is.</p>
+                                    <p>Before <em>Covid-19</em> was drastically popularized however, we have been dealing with another deadly virus: The <em>Influenza</em> virus.</p>
+                                    <p>As our communities have gotten used to Covid-19 over time, we have started to hear assumptions such as <em>the expansion of Covid-19 should slow down once we get to the Summer season</em>, or <em>Covid-19 is similar to the Flu.</em>
+                                    Clearly, there are assumptions that the Influenza virus and Covid-19 virus share some similarities.</p>
+                                    <p>We wondered if there are similarities between the groups of population most affected by these two viruses in terms of demographics.</p>
+                                    <p>In this dashboard, we analyze the demographics of those two populations in terms of following dimensions:</p>
+                                    <ul>
+                                      <li>Age Group</li>
+                                      <li>Gender</li>
+                                      <li>Race</li>
+                                      <li>Disease Cases</li>
+                                      <li>Disease Hosptalizations</li>
+                                      <li>Resulting Deaths</li>
+                                    </ul>
+                                    <p>Our driving data questions were:</p>
+                                    <ul>
+                                      <li><em>Which subgroups of the U.S. population are the most impacted by the Covid-19 virus?</em></li>
+                                      <li><em>Which subgroups of the U.S. population are the most impacted by the Influenza virus?</em></li>
+                                      <li><em>How do those two subgroups compare against each other?</em></li>
+                                    </ul>")
+                        ),
+                        br(),
+                        br()
                     )
                 )
             ),
@@ -397,8 +434,8 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML('<h4 class="plotTitle">This Is A Plot Title</h4>'),
-                            plotlyOutput('fluCasesAge')
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Age in', textOutput("selectedFluMonth1", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            plotlyOutput('fluDeathCases_AgePlotSummary')
                         )
                     ),
 
@@ -411,6 +448,17 @@ shinyUI(dashboardPage(
                             HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Age in', textOutput("selectedCovidMonth2", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("covid19CaseSurv_AgeTableSummary")
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
+                        )
+                    ),
+                    
+                    # Dashboard Visuals: Full-Width - Flu
+                    box(
+                        status = "success",
+                        collapsible = TRUE,
+                        width = 12,
+                        tags$div(
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Age in', textOutput("selectedFluMonth2", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            DT::dataTableOutput("fluDeathCases_AgeTableSummary")
                         )
                     )
                 )
@@ -454,19 +502,30 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML('<h4 class="plotTitle">This Is A Plot Title</h4>'),
-                            plotlyOutput('fluCasesGender')
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Gender in', textOutput("selectedFluMonth3", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            plotlyOutput('fluDeathCases_GenderPlotSummary')
                         )
                     ),
                     
                     # Dashboard Visuals: Full-Width - Covid
-                    column(
+                    box(
                         status = "danger",
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
                             HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Gender in', textOutput("selectedCovidMonth4", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("covid19CaseSurv_GenderTableSummary")
+                        )
+                    ),
+                    
+                    # Dashboard Visuals: Full-Width - Flu
+                    box(
+                        status = "success",
+                        collapsible = TRUE,
+                        width = 12,
+                        tags$div(
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Gender in', textOutput("selectedFluMonth4", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            DT::dataTableOutput("fluDeathCases_GenderTableSummary")
                         )
                     )
                 )
@@ -510,8 +569,8 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML('<h4 class="plotTitle">This Is A Plot Title</h4>'),
-                            plotlyOutput('fluCasesRace')
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Race in', textOutput("selectedFluMonth5", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            plotlyOutput('fluDeathCases_RacePlotSummary')
                         )
                     ),
                     
@@ -525,6 +584,17 @@ shinyUI(dashboardPage(
                             DT::dataTableOutput("covid19CaseSurv_RaceTableSummary")
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
                         )
+                    ),
+                    
+                    # Dashboard Visuals: Full-Width - Flu
+                    box(
+                        status = "success",
+                        collapsible = TRUE,
+                        width = 12,
+                        tags$div(
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Race in', textOutput("selectedFluMonth6", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            DT::dataTableOutput("fluDeathCases_RaceTableSummary")
+                        )
                     )
                 )
             ),
@@ -532,8 +602,8 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 5 - Geographical Dashboard
-            # -------------------------------
+            # Page 5a - Geographical Dashboard
+            # --------------------------------
             
             tabItem(
                 
@@ -553,8 +623,36 @@ shinyUI(dashboardPage(
                     box(
                         status = "info",
                         width=12,
-                        tags$p(HTML("This is a <strong>simple text example</strong>
-                                    to use as a simple placeholder."))
+                        tags$p(HTML("In development...<strong>Coming Soon!</strong>"))
+                    )
+                )
+            ),
+            # --- End of Geographical Dashboard
+            
+            
+            
+            # Page 5b - Correlations Dashboard
+            # --------------------------------
+            
+            tabItem(
+                
+                # Tab ID linking from sidebar
+                tabName = "correlationDashboard",
+                
+                # Start of the fluid body
+                fluidRow(
+                    
+                    # Dashboard Title
+                    box(
+                        width=12,
+                        h2("Correlation Views")
+                    ),
+                    
+                    # Dashboard Visuals
+                    box(
+                        status = "info",
+                        width=12,
+                        tags$p(HTML("In development...<strong>Coming Soon!</strong>"))
                     )
                 )
             ),
@@ -583,7 +681,12 @@ shinyUI(dashboardPage(
                     box(
                         status = "info",
                         width=12,
-                        tags$p(HTML("List of data sources will go here."))
+                        br(),
+                        br(),
+                        HTML('
+                            <p>Centers for Disease Control and Prevention, COVID-19 Response. <em>COVID-19 Case Surveillance Public Data Access, Summary, and Limitations</em>. (version date: December 31, 2020). Accessed January 18, 2021. <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target=_blank>https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf</a></p><br>
+                            <p>Centers for Disease Control and Prevention, National Center for Health Statistics. <em>Monthly provisional counts of deaths by age group, sex, and race/ethnicity for select causes of death</em>. (version date: December 17, 2020). Accessed January 18, 2021. <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target=_blank>https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5</a></p><br>
+                        ')
                     )
                 )
             ),
@@ -605,12 +708,22 @@ shinyUI(dashboardPage(
                         width=12,
                         h2("Contact Information")
                     ),
-                    
                     # Page Contents
                     box(
                         status = "info",
                         width=12,
-                        tags$p(HTML("Contact information will go here."))
+                        br(),
+                        br(),
+                        tags$div(class="bodyTextContainer",
+                                 tags$h4("Maeva Ralafiarindaza"),
+                                 HTML("<p><strong>Data Scientist and Developer</strong></p>"),
+                                 HTML('<p><a href="https://www.github.com/maevadevs" target=_blank>GitHub</a> |
+                                          <a href="https://www.linkedin.com/in/maevaralafiarindaza/" target=_blank>LinkedIn</a> |
+                                          <a href="https://www.kaggle.com/maevaralafi" target=_blank>Kaggle</a> | 
+                                          <a href="https://maevadevs.github.io/" target=_blank>Blog</a></p>')
+                        ),
+                        br(),
+                        br()
                     )
                 )
             )
