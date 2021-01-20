@@ -37,6 +37,7 @@ library(formattable)
 
 # covid19CaseSurv_all <- read.csv("data/covid19-case-surv-aggregated-all.csv")
 
+covid19CaseSurv_all <- read.csv("data/covid19-case-surv-aggregated-all.csv")
 covid19CaseSurv01 <- read.csv("data/covid19-case-surv-aggregated-01.csv")
 covid19CaseSurv02 <- read.csv("data/covid19-case-surv-aggregated-02.csv")
 covid19CaseSurv03 <- read.csv("data/covid19-case-surv-aggregated-03.csv")
@@ -52,7 +53,11 @@ covid19CaseSurv12 <- read.csv("data/covid19-case-surv-aggregated-12.csv")
 
 fluDeaths2019Monthly <- read.csv("data/deaths-by-influenza-and-pneumonia-2019-monthly.csv")
 
+# Covid19 cases count in 2020: 1/1/2020 - 12/31/2020
+# --------------------------------------------------
 
+covid19TotalCasesCountIn2020 <- sum(covid19CaseSurv_all$Count)
+fluTotalCasesCount2019 <- sum(fluDeaths2019Monthly$Death, na.rm = TRUE)
 
 # Variables from covid19CaseSurv
 # ------------------------------

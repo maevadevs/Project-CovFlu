@@ -209,19 +209,19 @@ shinyUI(dashboardPage(
                 icon = icon("dashboard")
             ),
             
-            # Link to the Geographical Dashboard
-            menuItem(
-                "Geographical",
-                tabName = "geographicalDashboard",
-                icon = icon("dashboard")
-            ),
-            
-            # Link to the Correlation Dashboard
-            menuItem(
-                "Correlations",
-                tabName = "correlationDashboard",
-                icon = icon("dashboard")
-            ),
+            # # Link to the Geographical Dashboard
+            # menuItem(
+            #     "Geographical",
+            #     tabName = "geographicalDashboard",
+            #     icon = icon("dashboard")
+            # ),
+            # 
+            # # Link to the Correlation Dashboard
+            # menuItem(
+            #     "Correlations",
+            #     tabName = "correlationDashboard",
+            #     icon = icon("dashboard")
+            # ),
 
             # Link to the Data Source Page
             menuItem(
@@ -396,25 +396,33 @@ shinyUI(dashboardPage(
                         h2("Age Views")
                     ),
                     
-                    # # Covid Value box 1
-                    # # Static Value box
-                    # infoBox(10 * 2, "Covid Box"),
-                    # 
-                    # # Covid Value box 2
-                    # # Dynamic valueBoxes
-                    # # valueBoxOutput("age_covidbox2"),
-                    # infoBox(10 * 2, "Flu Box", icon = icon("credit-card")),
-                    # 
-                    # 
-                    # # Flu Value box 1
-                    # # Static Value box
-                    # infoBox(10 * 2, "Flu Box", icon = icon("credit-card")),
-                    # 
-                    # # Flu Value box 2
-                    # # Dynamic value Box
-                    # valueBoxOutput("age_flubox2"),
-                    # # infoBox(10 * 2, "Flu Box", icon = icon("credit-card")),
-                    
+                    # Value Boxes
+                    box(
+                        status="info",
+                        width=12,
+                        collapsible = TRUE,
+                        
+                        # # Static Value box: Covid Value box 1
+                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                        
+                        # Dynamic valueBox: Covid Total Cases
+                        valueBoxOutput("age_covid19TotalCasesCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Flu Total Cases
+                        valueBoxOutput("age_fluTotalCasesCountIn2019", width=6),
+                        
+                        # Dynamic valueBox: Covid Cases in selected Month
+                        valueBoxOutput("age_covid19CasesCountInMonth", width=3),
+                        
+                        # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
+                        valueBoxOutput("age_covid19CasesPercentInMonth", width=3),
+                        
+                        # Dynamic valueBox: Flu Cases in selected Month
+                        valueBoxOutput("age_fluCasesCountInMonth", width=3),
+                        
+                        # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
+                        valueBoxOutput("age_fluCasesPercentInMonth", width=3),  
+                    ),
 
                     # Dashboard Visuals: Column 1 - Covid
                     box(
