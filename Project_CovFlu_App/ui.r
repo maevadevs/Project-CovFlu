@@ -8,6 +8,7 @@
 customBadgeColor <- "#d81b60"
 
 
+
 # Settings Accordion
 # ------------------
 
@@ -315,6 +316,15 @@ shinyUI(dashboardPage(
                 rel = "stylesheet", 
                 type = "text/css", 
                 href = "styles.css")
+        ),
+        
+        # Custom ribbon link for github: run ?ribbon_css for all the options
+        ribbon_css(
+            "https://github.com/maevadevs/project-covflu", 
+            color = "white", 
+            font_color = "black", 
+            border_color = "black", 
+            parent_css = list("z-index"="10000")
         ),
         
         

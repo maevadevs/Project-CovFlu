@@ -22,6 +22,7 @@ library(DT)
 library(dashboardthemes)
 library(janitor)
 library(formattable)
+library(gitlink)
 
 
 
