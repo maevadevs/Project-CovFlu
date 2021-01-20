@@ -635,6 +635,116 @@ shinyServer(function(input, output) {
   
   
   # GENDER PAGE
+  # Output the total cases count of Covid-19 to valueBoxOutput
+  # ----------------------------------------------------------
+  output$gender_covid19TotalCasesCountIn2020 <- renderValueBox({
+    valueBox(
+      paste0(comma(covid19TotalCasesCountIn2020, format="d")), # Formatted Value
+      "Total Covid-19 Cases in 2020", 
+      icon = icon("virus"), # Font-Awesome Icon
+      color = "red"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the total deaths count of Flu to valueBoxOutput
+  # ------------------------------------------------------
+  output$gender_fluTotalCasesCountIn2019 <- renderValueBox({
+    valueBox(
+      paste0(comma(fluTotalCasesCount2019, format="d")), # Formatted Value
+      "Total Influenza Deaths in 2019", 
+      icon = icon("head-side-mask"), # Font-Awesome Icon
+      color = "green"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the cases count of Covid-19 in selected month to valueBoxOutput
+  # ----------------------------------------------------------------------
+  output$gender_covid19CasesCountInMonth <- renderValueBox({
+    valueBox(
+      paste0(
+        # Formatted Value
+        comma(
+          sum(covid19CaseSurv_month_filtered()$Count), 
+          format="d"
+        )
+      ),
+      paste0("Total Covid-19 Cases in ", input$covid19CaseMonth, " 2020"), 
+      icon = icon("head-side-cough"), # Font-Awesome Icon
+      color = "red"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the percent count of Covid-19 in selected month to valueBoxOutput
+  # ------------------------------------------------------------------------
+  output$gender_covid19CasesPercentInMonth <- renderValueBox({
+    valueBox(
+      # Formatted Value
+      paste0(
+        round(
+          sum(covid19CaseSurv_month_filtered()$Count) / covid19TotalCasesCountIn2020 * 100, 
+          2
+        ),
+        "%"
+      ),
+      paste0("Percent of Covid-19 Cases in ", input$covid19CaseMonth, " 2020"), 
+      icon = icon("lungs-virus"), # Font-Awesome Icon
+      color = "red"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the cases count of Flu in selected month to valueBoxOutput
+  # -----------------------------------------------------------------
+  output$gender_fluCasesCountInMonth <- renderValueBox({
+    valueBox(
+      paste0(
+        # Formatted Value
+        comma(
+          sum(fluDeaths2019CaseMonth_filtered()$Death, na.rm = TRUE), 
+          format="d"
+        )
+      ),
+      paste0("Total Influenza Deaths in ", input$fluDeaths2019CaseMonth, " 2019"), 
+      icon = icon("temperature-high"), # Font-Awesome Icon
+      color = "green"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the percent count of Covid-19 in selected month to valueBoxOutput
+  # ------------------------------------------------------------------------
+  output$gender_fluCasesPercentInMonth <- renderValueBox({
+    valueBox(
+      # Formatted Value
+      paste0(
+        round(
+          sum(fluDeaths2019CaseMonth_filtered()$Death, na.rm = TRUE) / fluTotalCasesCount2019 * 100, 
+          2
+        ),
+        "%"
+      ),
+      paste0("Percent of Covid-19 Cases in ", input$fluDeaths2019CaseMonth, " 2019"), 
+      icon = icon("viruses"), # Font-Awesome Icon
+      color = "green"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
   # Plot Covid-19:
   # Generate Covid-19 Plotly Summary Plot by Month
   # ----------------------------------------------
@@ -823,6 +933,116 @@ shinyServer(function(input, output) {
   # -----------------
   # --- RACE PAGE ---
   # -----------------
+  
+  
+  
+  # GENDER PAGE
+  # Output the total cases count of Covid-19 to valueBoxOutput
+  # ----------------------------------------------------------
+  output$race_covid19TotalCasesCountIn2020 <- renderValueBox({
+    valueBox(
+      paste0(comma(covid19TotalCasesCountIn2020, format="d")), # Formatted Value
+      "Total Covid-19 Cases in 2020", 
+      icon = icon("virus"), # Font-Awesome Icon
+      color = "red"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the total deaths count of Flu to valueBoxOutput
+  # ------------------------------------------------------
+  output$race_fluTotalCasesCountIn2019 <- renderValueBox({
+    valueBox(
+      paste0(comma(fluTotalCasesCount2019, format="d")), # Formatted Value
+      "Total Influenza Deaths in 2019", 
+      icon = icon("head-side-mask"), # Font-Awesome Icon
+      color = "green"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the cases count of Covid-19 in selected month to valueBoxOutput
+  # ----------------------------------------------------------------------
+  output$race_covid19CasesCountInMonth <- renderValueBox({
+    valueBox(
+      paste0(
+        # Formatted Value
+        comma(
+          sum(covid19CaseSurv_month_filtered()$Count), 
+          format="d"
+        )
+      ),
+      paste0("Total Covid-19 Cases in ", input$covid19CaseMonth, " 2020"), 
+      icon = icon("head-side-cough"), # Font-Awesome Icon
+      color = "red"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the percent count of Covid-19 in selected month to valueBoxOutput
+  # ------------------------------------------------------------------------
+  output$race_covid19CasesPercentInMonth <- renderValueBox({
+    valueBox(
+      # Formatted Value
+      paste0(
+        round(
+          sum(covid19CaseSurv_month_filtered()$Count) / covid19TotalCasesCountIn2020 * 100, 
+          2
+        ),
+        "%"
+      ),
+      paste0("Percent of Covid-19 Cases in ", input$covid19CaseMonth, " 2020"), 
+      icon = icon("lungs-virus"), # Font-Awesome Icon
+      color = "red"
+    )
+  })
+  
+  
+  
+  # GENDER PAGE
+  # Output the cases count of Flu in selected month to valueBoxOutput
+  # -----------------------------------------------------------------
+  output$race_fluCasesCountInMonth <- renderValueBox({
+    valueBox(
+      paste0(
+        # Formatted Value
+        comma(
+          sum(fluDeaths2019CaseMonth_filtered()$Death, na.rm = TRUE), 
+          format="d"
+        )
+      ),
+      paste0("Total Influenza Deaths in ", input$fluDeaths2019CaseMonth, " 2019"), 
+      icon = icon("temperature-high"), # Font-Awesome Icon
+      color = "green"
+    )
+  })
+  
+  
+  
+  # RACE PAGE
+  # Output the percent count of Covid-19 in selected month to valueBoxOutput
+  # ------------------------------------------------------------------------
+  output$race_fluCasesPercentInMonth <- renderValueBox({
+    valueBox(
+      # Formatted Value
+      paste0(
+        round(
+          sum(fluDeaths2019CaseMonth_filtered()$Death, na.rm = TRUE) / fluTotalCasesCount2019 * 100, 
+          2
+        ),
+        "%"
+      ),
+      paste0("Percent of Covid-19 Cases in ", input$fluDeaths2019CaseMonth, " 2019"), 
+      icon = icon("viruses"), # Font-Awesome Icon
+      color = "green"
+    )
+  })
   
   
   

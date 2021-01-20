@@ -403,7 +403,7 @@ shinyUI(dashboardPage(
                     # Dashboard Title
                     box(
                         width=12,
-                        h2("Age Views")
+                        h2("Age Dashboard")
                     ),
                     
                     # Value Boxes
@@ -411,8 +411,9 @@ shinyUI(dashboardPage(
                         status="info",
                         width=12,
                         collapsible = TRUE,
-                        
-                        # # Static Value box: Covid Value box 1
+                        collapsed = TRUE,
+
+                                                # # Static Value box: Covid Value box 1
                         # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
                         
                         # Dynamic valueBox: Covid Total Cases
@@ -499,7 +500,36 @@ shinyUI(dashboardPage(
                     # Dashboard Title
                     box(
                         width=12,
-                        h2("Gender Views"),
+                        h2("Gender Dashboard"),
+                    ),
+                    
+                    # Value Boxes
+                    box(
+                        status="info",
+                        width=12,
+                        collapsible = TRUE,
+                        collapsed = TRUE,
+
+                                                # # Static Value box: Covid Value box 1
+                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                        
+                        # Dynamic valueBox: Covid Total Cases
+                        valueBoxOutput("gender_covid19TotalCasesCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Flu Total Cases
+                        valueBoxOutput("gender_fluTotalCasesCountIn2019", width=6),
+                        
+                        # Dynamic valueBox: Covid Cases in selected Month
+                        valueBoxOutput("gender_covid19CasesCountInMonth", width=3),
+                        
+                        # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
+                        valueBoxOutput("gender_covid19CasesPercentInMonth", width=3),
+                        
+                        # Dynamic valueBox: Flu Cases in selected Month
+                        valueBoxOutput("gender_fluCasesCountInMonth", width=3),
+                        
+                        # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
+                        valueBoxOutput("gender_fluCasesPercentInMonth", width=3),  
                     ),
                     
                     # Dashboard Visuals: Column 1 - Covid
@@ -566,7 +596,36 @@ shinyUI(dashboardPage(
                     # Dashboard Title
                     box(
                         width=12,
-                        h2("Race Views")
+                        h2("Race Dashboard")
+                    ),
+                    
+                    # Value Boxes
+                    box(
+                        status="info",
+                        width=12,
+                        collapsible = TRUE,
+                        collapsed = TRUE,
+                        
+                        # # Static Value box: Covid Value box 1
+                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                        
+                        # Dynamic valueBox: Covid Total Cases
+                        valueBoxOutput("race_covid19TotalCasesCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Flu Total Cases
+                        valueBoxOutput("race_fluTotalCasesCountIn2019", width=6),
+                        
+                        # Dynamic valueBox: Covid Cases in selected Month
+                        valueBoxOutput("race_covid19CasesCountInMonth", width=3),
+                        
+                        # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
+                        valueBoxOutput("race_covid19CasesPercentInMonth", width=3),
+                        
+                        # Dynamic valueBox: Flu Cases in selected Month
+                        valueBoxOutput("race_fluCasesCountInMonth", width=3),
+                        
+                        # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
+                        valueBoxOutput("race_fluCasesPercentInMonth", width=3),  
                     ),
                     
                     # Dashboard Visuals: Column 1 - Covid
