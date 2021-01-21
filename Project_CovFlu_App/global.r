@@ -57,8 +57,43 @@ fluDeaths2019Monthly <- read.csv("data/deaths-by-influenza-and-pneumonia-2019-mo
 # Covid19 cases count in 2020: 1/1/2020 - 12/31/2020
 # --------------------------------------------------
 
+# Total cases
 covid19TotalCasesCountIn2020 <- sum(covid19CaseSurv_all$Count)
-fluTotalCasesCount2019 <- sum(fluDeaths2019Monthly$Death, na.rm = TRUE)
+
+# Confirmed Cases
+covid19ConfirmedCases <- covid19CaseSurv_all %>%
+  filter(Confirmation.Status == "Laboratory-confirmed case")
+
+covid19TotalConfirmedCasesCountIn2020 <- sum(covid19ConfirmedCases$Count)
+
+# # Probable Cases
+# covid19ProbableCases <- covid19CaseSurv_all %>%
+#   filter(Confirmation.Status == "Probable Case")
+# 
+# covid19TotalProbableCasesCountIn2020 <- sum(covid19ProbableCases$Count)
+
+# Hospitalization Cases
+covid19Hospitalization <- covid19CaseSurv_all %>%
+  filter(Hospitalization == "Yes")
+
+covid19TotalHospitalizationCountIn2020 <- sum(covid19Hospitalization$Count)
+
+# ICU Cases
+covid19Icu <- covid19CaseSurv_all %>%
+  filter(ICU == "Yes")
+
+covid19TotalIcuCountIn2020 <- sum(covid19Icu$Count)
+
+# Death Cases
+covid19Death <- covid19CaseSurv_all %>%
+  filter(Death == "Yes")
+
+covid19TotalDeathCountIn2020 <- sum(covid19Death$Count)
+
+# Flu Death cases count in 2019: 1/1/2019 - 12/31/2019
+# ----------------------------------------------------
+
+fluTotalDeathCount2019 <- sum(fluDeaths2019Monthly$Death, na.rm = TRUE)
 
 # Variables from covid19CaseSurv
 # ------------------------------

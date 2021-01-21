@@ -189,6 +189,13 @@ shinyUI(dashboardPage(
                 # badgeColor = "maroon"
             ),
             
+            # Link to the Overview Dashboard
+            menuItem(
+                "Overview",
+                tabName = "overviewDashboard",
+                icon = icon("dashboard")
+            ),
+            
             # Link to the Age Dashboard
             menuItem(
                 "Age",
@@ -358,13 +365,16 @@ shinyUI(dashboardPage(
                         width=12,
                         br(),
                         br(),
-                        tags$p(HTML("<p>Throughout the year 2020 and beyond, the term <em>Covid-19</em> has certainly become the most familiar term to our ears.
+                        tags$p(HTML("<h3>Background Synopsis</h3>
+                                    <p>Throughout the year 2020 and beyond, the term <em>Covid-19</em> has certainly become the most familiar term to our ears.
                                     It is astonishing when we think that back in 2019, hardly anyone has ever heard of the term <em>Covid-19</em> or even knew what a Coronavirus is.</p>
                                     <p>Before <em>Covid-19</em> was drastically popularized however, we have been dealing with another deadly virus: The <em>Influenza</em> virus.</p>
                                     <p>As our communities have gotten used to Covid-19 over time, we have started to hear assumptions such as <em>the expansion of Covid-19 should slow down once we get to the Summer season</em>, or <em>Covid-19 is similar to the Flu.</em>
                                     Clearly, there are assumptions that the Influenza virus and Covid-19 virus share some similarities.</p>
                                     <p>We wondered if there are similarities between the groups of population most affected by these two viruses in terms of demographics.</p>
-                                    <p>In this dashboard, we analyze the demographics of those two populations in terms of following dimensions:</p>
+                                    <br>
+                                    <h3>App Goals</h3>
+                                    <p>In this Shiny dashboard application, we analyze the demographics of those two populations using Covid-19 cases dataset from 2020 and Influenza mortality dataset from 2019. We compare them in terms of the following dimensions:</p>
                                     <ul>
                                       <li>Age Group</li>
                                       <li>Gender</li>
@@ -373,7 +383,7 @@ shinyUI(dashboardPage(
                                       <li>Disease Hosptalizations</li>
                                       <li>Resulting Deaths</li>
                                     </ul>
-                                    <p>Our driving data questions were:</p>
+                                    <p><strong>Our main driving data questions that we wanted to answer were:</strong></p>
                                     <ul>
                                       <li><em>Which subgroups of the U.S. population are the most impacted by the Covid-19 virus?</em></li>
                                       <li><em>Which subgroups of the U.S. population are the most impacted by the Influenza virus?</em></li>
@@ -389,7 +399,114 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 2 - Age Dashboard
+            # Page 2 - Overview Dashboard
+            # --------------------------
+            
+            tabItem(
+                
+                # Tab ID linking from sidebar
+                tabName = "overviewDashboard",
+                
+                # Start of the fluid body for contents
+                fluidRow(
+                    
+                    # Dashboard Title
+                    box(
+                        width=12,
+                        h2("Overview")
+                    ),
+                    
+                    # Value Boxes: Covid 19 Cases
+                    box(
+                        # h2("Covid-19 Cases In 2020"),
+                        HTML('<h3>Covid-19 Cases In 2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h3>'),
+                        status="danger",
+                        width=12,
+                        collapsible = TRUE,
+                        collapsed = TRUE,
+                        
+                        # # Static Value box: Covid Value box 1
+                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                        
+                        # Dynamic valueBox: Covid Total Cases
+                        valueBoxOutput("overview_covid19TotalCasesCountIn2020", width=12),
+                        
+                        # Dynamic valueBox: Covid Total Confirmed Cases
+                        valueBoxOutput("overview_covid19TotalConfirmedCasesCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Percent Confirmed Cases
+                        valueBoxOutput("overview_covid19TotalConfirmedCasesPercentIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Total Hospitalization Cases
+                        valueBoxOutput("overview_covid19TotalHospitalizationCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Percent Hospitalization Cases
+                        valueBoxOutput("overview_covid19TotalHospitalizationPercentIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Total ICU Cases
+                        valueBoxOutput("overview_covid19TotalIcuCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Percent ICU Cases
+                        valueBoxOutput("overview_covid19TotalIcuPercentIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Total Death Cases
+                        valueBoxOutput("overview_covid19TotalDeathCountIn2020", width=6),
+                        
+                        # Dynamic valueBox: Covid Percent Death Cases
+                        valueBoxOutput("overview_covid19TotalDeathPercentIn2020", width=6),
+                        
+                        # # Dynamic valueBox: Covid Total Probable Cases
+                        # valueBoxOutput("overview_covid19TotalProbableCasesCountIn2020", width=6),
+                        
+                        # # Dynamic valueBox: Covid Total Probable Cases
+                        # valueBoxOutput("overview_covid19TotalProbableCasesCountIn2020", width=6),
+                        
+                        # # Dynamic valueBox: Covid Total Probable Cases
+                        # valueBoxOutput("overview_covid19TotalProbableCasesCountIn2020", width=6)
+                    ),
+                    
+                    # Value Boxes: Covid-19 Deaths
+                    box(
+                        HTML('<h3>Covid-19 Deaths in 2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h3>'),
+                        status="danger",
+                        width=6,
+                        collapsible = TRUE,
+                        collapsed = FALSE,
+                        
+                        # Dynamic valueBox: Covid-19 Total Death
+                        valueBoxOutput("overview_covid19TotalDeathCountIn2020__sub", width=12),
+                        
+                        # Dynamic valueBox: Covid-19 Death Count in selected Month
+                        valueBoxOutput("overview_Covid19DeathCountInMonth", width=6),
+                        
+                        # Dynamic valueBox: Covid-19 Percent Death in selected Month vs Total Death
+                        valueBoxOutput("overview_Covid19DeathPercentInMonth", width=6)
+                    ),
+                    
+                    # Value Boxes: Influenza Deaths
+                    box(
+                        HTML(paste('<h3>Influenza Deaths in 2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h3>')),
+                        status="success",
+                        width=6,
+                        collapsible = TRUE,
+                        collapsed = FALSE,
+                        
+                        # Dynamic valueBox: Flu Total Deaths
+                        valueBoxOutput("overview_fluTotalDeathCountIn2019", width=12),
+                        
+                        # Dynamic valueBox: Flu Deaths in selected Month
+                        valueBoxOutput("overview_fluDeathCountInMonth", width=6),
+                        
+                        # Dynamic valueBox: Flu Percent Deaths in selected Month vs Total Deaths
+                        valueBoxOutput("overview_fluDeathPercentInMonth", width=6)
+                    )
+                )
+            ),
+            # --- End of Overview Dashboard
+            
+            
+            
+            # Page 3 - Age Dashboard
             # ----------------------
             
             tabItem(
@@ -406,34 +523,34 @@ shinyUI(dashboardPage(
                         h2("Age Dashboard")
                     ),
                     
-                    # Value Boxes
-                    box(
-                        status="info",
-                        width=12,
-                        collapsible = TRUE,
-                        collapsed = TRUE,
-
-                                                # # Static Value box: Covid Value box 1
-                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
-                        
-                        # Dynamic valueBox: Covid Total Cases
-                        valueBoxOutput("age_covid19TotalCasesCountIn2020", width=6),
-                        
-                        # Dynamic valueBox: Flu Total Cases
-                        valueBoxOutput("age_fluTotalCasesCountIn2019", width=6),
-                        
-                        # Dynamic valueBox: Covid Cases in selected Month
-                        valueBoxOutput("age_covid19CasesCountInMonth", width=3),
-                        
-                        # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
-                        valueBoxOutput("age_covid19CasesPercentInMonth", width=3),
-                        
-                        # Dynamic valueBox: Flu Cases in selected Month
-                        valueBoxOutput("age_fluCasesCountInMonth", width=3),
-                        
-                        # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
-                        valueBoxOutput("age_fluCasesPercentInMonth", width=3),  
-                    ),
+                    # # Value Boxes
+                    # box(
+                    #     status="info",
+                    #     width=12,
+                    #     collapsible = TRUE,
+                    #     collapsed = TRUE,
+                    # 
+                    #     # # Static Value box: Covid Value box 1
+                    #     # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                    #     
+                    #     # Dynamic valueBox: Covid Total Cases
+                    #     valueBoxOutput("age_covid19TotalCasesCountIn2020", width=6),
+                    #     
+                    #     # Dynamic valueBox: Flu Total Cases
+                    #     valueBoxOutput("age_fluTotalCasesCountIn2019", width=6),
+                    #     
+                    #     # Dynamic valueBox: Covid Cases in selected Month
+                    #     valueBoxOutput("age_covid19CasesCountInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
+                    #     valueBoxOutput("age_covid19CasesPercentInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Flu Cases in selected Month
+                    #     valueBoxOutput("age_fluCasesCountInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
+                    #     valueBoxOutput("age_fluCasesPercentInMonth", width=3),  
+                    # ),
 
                     # Dashboard Visuals: Column 1 - Covid
                     box(
@@ -441,7 +558,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Age in', textOutput("selectedCovidMonth1", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Age</strong> in<strong>', textOutput("selectedCovidMonth1", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
                             plotlyOutput('covid19CaseSurv_AgePlotSummary')
                         )
@@ -453,7 +570,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Age in', textOutput("selectedFluMonth1", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia <strong>Deaths by Age</strong> in <strong>', textOutput("selectedFluMonth1", inline=TRUE), '2019</strong><br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
                             plotlyOutput('fluDeathCases_AgePlotSummary')
                         )
                     ),
@@ -464,7 +581,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Age in', textOutput("selectedCovidMonth2", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Age</strong> in <strong>', textOutput("selectedCovidMonth2", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("covid19CaseSurv_AgeTableSummary")
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
                         )
@@ -476,7 +593,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Age in', textOutput("selectedFluMonth2", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia <strong>Deaths by Age</strong> in <strong>', textOutput("selectedFluMonth2", inline=TRUE), '2019</strong><br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("fluDeathCases_AgeTableSummary")
                         )
                     )
@@ -486,7 +603,7 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 3 - Gender Dashboard
+            # Page 4 - Gender Dashboard
             # -------------------------
             
             tabItem(
@@ -500,37 +617,37 @@ shinyUI(dashboardPage(
                     # Dashboard Title
                     box(
                         width=12,
-                        h2("Gender Dashboard"),
+                        h2("Gender Dashboard")
                     ),
                     
-                    # Value Boxes
-                    box(
-                        status="info",
-                        width=12,
-                        collapsible = TRUE,
-                        collapsed = TRUE,
-
-                                                # # Static Value box: Covid Value box 1
-                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
-                        
-                        # Dynamic valueBox: Covid Total Cases
-                        valueBoxOutput("gender_covid19TotalCasesCountIn2020", width=6),
-                        
-                        # Dynamic valueBox: Flu Total Cases
-                        valueBoxOutput("gender_fluTotalCasesCountIn2019", width=6),
-                        
-                        # Dynamic valueBox: Covid Cases in selected Month
-                        valueBoxOutput("gender_covid19CasesCountInMonth", width=3),
-                        
-                        # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
-                        valueBoxOutput("gender_covid19CasesPercentInMonth", width=3),
-                        
-                        # Dynamic valueBox: Flu Cases in selected Month
-                        valueBoxOutput("gender_fluCasesCountInMonth", width=3),
-                        
-                        # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
-                        valueBoxOutput("gender_fluCasesPercentInMonth", width=3),  
-                    ),
+                    # # Value Boxes
+                    # box(
+                    #     status="info",
+                    #     width=12,
+                    #     collapsible = TRUE,
+                    #     collapsed = TRUE,
+                    # 
+                    #     # # Static Value box: Covid Value box 1
+                    #     # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                    #     
+                    #     # Dynamic valueBox: Covid Total Cases
+                    #     valueBoxOutput("gender_covid19TotalCasesCountIn2020", width=6),
+                    #     
+                    #     # Dynamic valueBox: Flu Total Cases
+                    #     valueBoxOutput("gender_fluTotalCasesCountIn2019", width=6),
+                    #     
+                    #     # Dynamic valueBox: Covid Cases in selected Month
+                    #     valueBoxOutput("gender_covid19CasesCountInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
+                    #     valueBoxOutput("gender_covid19CasesPercentInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Flu Cases in selected Month
+                    #     valueBoxOutput("gender_fluCasesCountInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
+                    #     valueBoxOutput("gender_fluCasesPercentInMonth", width=3),  
+                    # ),
                     
                     # Dashboard Visuals: Column 1 - Covid
                     box(
@@ -538,7 +655,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Gender in', textOutput("selectedCovidMonth3", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Gender</strong> in <strong>', textOutput("selectedCovidMonth3", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
                             plotlyOutput('covid19CaseSurv_GenderPlotSummary')
                         )
@@ -550,7 +667,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Gender in', textOutput("selectedFluMonth3", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia <strong>Deaths by Gender</strong> in <strong>', textOutput("selectedFluMonth3", inline=TRUE), '2019</strong><br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
                             plotlyOutput('fluDeathCases_GenderPlotSummary')
                         )
                     ),
@@ -561,7 +678,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Gender in', textOutput("selectedCovidMonth4", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Gender</strong> in <strong>', textOutput("selectedCovidMonth4", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("covid19CaseSurv_GenderTableSummary")
                         )
                     ),
@@ -572,7 +689,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Gender in', textOutput("selectedFluMonth4", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia <strong>Deaths by Gender</strong> in <strong>', textOutput("selectedFluMonth4", inline=TRUE), '2019</strong><br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("fluDeathCases_GenderTableSummary")
                         )
                     )
@@ -582,7 +699,7 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 4 - Race Dashboard
+            # Page 5 - Race Dashboard
             # -----------------------
             
             tabItem(
@@ -599,34 +716,34 @@ shinyUI(dashboardPage(
                         h2("Race Dashboard")
                     ),
                     
-                    # Value Boxes
-                    box(
-                        status="info",
-                        width=12,
-                        collapsible = TRUE,
-                        collapsed = TRUE,
-                        
-                        # # Static Value box: Covid Value box 1
-                        # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
-                        
-                        # Dynamic valueBox: Covid Total Cases
-                        valueBoxOutput("race_covid19TotalCasesCountIn2020", width=6),
-                        
-                        # Dynamic valueBox: Flu Total Cases
-                        valueBoxOutput("race_fluTotalCasesCountIn2019", width=6),
-                        
-                        # Dynamic valueBox: Covid Cases in selected Month
-                        valueBoxOutput("race_covid19CasesCountInMonth", width=3),
-                        
-                        # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
-                        valueBoxOutput("race_covid19CasesPercentInMonth", width=3),
-                        
-                        # Dynamic valueBox: Flu Cases in selected Month
-                        valueBoxOutput("race_fluCasesCountInMonth", width=3),
-                        
-                        # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
-                        valueBoxOutput("race_fluCasesPercentInMonth", width=3),  
-                    ),
+                    # # Value Boxes
+                    # box(
+                    #     status="info",
+                    #     width=12,
+                    #     collapsible = TRUE,
+                    #     collapsed = TRUE,
+                    #     
+                    #     # # Static Value box: Covid Value box 1
+                    #     # infoBox(10 * 2, "Flu Box", icon = icon("credit-card"), width=6),
+                    #     
+                    #     # Dynamic valueBox: Covid Total Cases
+                    #     valueBoxOutput("race_covid19TotalCasesCountIn2020", width=6),
+                    #     
+                    #     # Dynamic valueBox: Flu Total Cases
+                    #     valueBoxOutput("race_fluTotalCasesCountIn2019", width=6),
+                    #     
+                    #     # Dynamic valueBox: Covid Cases in selected Month
+                    #     valueBoxOutput("race_covid19CasesCountInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Covid Percent Cases in selected Month vs Total Cases
+                    #     valueBoxOutput("race_covid19CasesPercentInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Flu Cases in selected Month
+                    #     valueBoxOutput("race_fluCasesCountInMonth", width=3),
+                    #     
+                    #     # Dynamic valueBox: Flu Percent Cases in selected Month vs Total Cases
+                    #     valueBoxOutput("race_fluCasesPercentInMonth", width=3),  
+                    # ),
                     
                     # Dashboard Visuals: Column 1 - Covid
                     box(
@@ -634,7 +751,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Race in', textOutput("selectedCovidMonth5", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Race</strong> in <strong>', textOutput("selectedCovidMonth5", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
                             plotlyOutput('covid19CaseSurv_RacePlotSummary')
                         )
@@ -646,7 +763,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 6, 
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Race in', textOutput("selectedFluMonth5", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia <strong>Deaths by Race</strong> in <strong>', textOutput("selectedFluMonth5", inline=TRUE), '2019</strong><br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
                             plotlyOutput('fluDeathCases_RacePlotSummary')
                         )
                     ),
@@ -657,7 +774,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Covid-19 Cases by Race in', textOutput("selectedCovidMonth6", inline=TRUE), '2020<br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Race</strong> in <strong>', textOutput("selectedCovidMonth6", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("covid19CaseSurv_RaceTableSummary")
                             # tableOutput('covid19CaseSurv_AgeTableSummary')
                         )
@@ -669,7 +786,7 @@ shinyUI(dashboardPage(
                         collapsible = TRUE,
                         width = 12,
                         tags$div(
-                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia Deaths by Race in', textOutput("selectedFluMonth6", inline=TRUE), '2019<br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
+                            HTML(paste('<h4 class="plotTitle">Influenza/Pneumonia <strong>Deaths by Race</strong> in <strong>', textOutput("selectedFluMonth6", inline=TRUE), '2019</strong><br><small>(Data Source: <a href="https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5" target="_blank">cdc.gov</a>)</small></h4>')),
                             DT::dataTableOutput("fluDeathCases_RaceTableSummary")
                         )
                     )
@@ -679,7 +796,7 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 5a - Geographical Dashboard
+            # Page 6 - Geographical Dashboard
             # --------------------------------
             
             tabItem(
@@ -708,7 +825,7 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 5b - Correlations Dashboard
+            # Page 7 - Correlations Dashboard
             # --------------------------------
             
             tabItem(
@@ -733,11 +850,11 @@ shinyUI(dashboardPage(
                     )
                 )
             ),
-            # --- End of Geographical Dashboard
+            # --- End of Correlations Dashboard
             
             
             
-            # Page 6 - Data Source Page
+            # Page 8 - Data Source Page
             # -------------------------
             
             tabItem(
@@ -771,7 +888,9 @@ shinyUI(dashboardPage(
             
             
             
-            # Page 7 - Contact Page
+            # Page 9 - Contact Page
+            # ---------------------
+            
             tabItem(
                 
                 # Tab ID linking from sidebar
@@ -792,13 +911,18 @@ shinyUI(dashboardPage(
                         br(),
                         br(),
                         tags$div(class="bodyTextContainer",
-                                 tags$h4("Maeva Ralafiarindaza"),
-                                 HTML("<p><strong>Data Scientist and Developer</strong></p>"),
-                                 HTML('<p><a href="https://www.github.com/maevadevs" target=_blank>GitHub</a> |
-                                          <a href="https://www.linkedin.com/in/maevaralafiarindaza/" target=_blank>LinkedIn</a> |
-                                          <a href="https://www.kaggle.com/maevaralafi" target=_blank>Kaggle</a> | 
-                                          <a href="https://maevadevs.github.io/" target=_blank>Blog</a></p>')
-                        ),
+                                 HTML('<img src="img/me.jpg" height=100 width=100 style="float: left; margin: 1em 1em 1em 0; border-radius: 100%;">'),
+                                 tags$h3("Maeva Ralafiarindaza"),
+                                 HTML('<p><strong>Data Scientist</strong></p>'),
+                                 HTML('<p><a href="https://www.github.com/maevadevs" target=_blank><i class="fa fa-github" style="font-size:25px;color:#cdcdcd;margin:0 1em 0 0;"></i></a>
+                                          <a href="https://www.linkedin.com/in/maevaralafiarindaza/" target=_blank><i class="fa fa-linkedin" style="font-size:25px;color:#cdcdcd;margin:0 1em 0 0;"></i></a>
+                                          <a href="https://maevadevs.github.io/" target=_blank><i class="fa fa-blog" style="font-size:25px;color:#cdcdcd;margin:0 1em 0 0;"></i></a>
+                                          <a href="https://twitter.com/MaevaRalafi" target=_blank><i class="fa fa-twitter" style="font-size:25px;color:#cdcdcd;margin:0 1em 0 0;"></i></a></p>
+                                       <br>
+                                       <div style="clear: both;"></div>
+                                       <p>My professional motivation is founded on the mindset that Data is the new oil: There is a lot of opportunities that we can extract from data. My passion is working with data technology to seek answers to critical questions, figure out solutions to problems, and empower others in their work. I am fascinated by the applications of data in solving problems and enhancing human life. I am mostly interested in the application of Data Science and Machine Learning in Healthcare and Finance.</p>')
+                                 
+                                 ),
                         br(),
                         br()
                     )
