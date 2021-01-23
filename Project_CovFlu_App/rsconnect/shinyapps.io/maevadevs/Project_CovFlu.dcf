@@ -1,0 +1,13 @@
+name: Project_CovFlu
+title: Project_CovFlu
+username:
+account: maevadevs
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3510219
+bundleId: 4132317
+url: https://maevadevs.shinyapps.io/Project_CovFlu/
+when: 1611381697.93644
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|debug.log|testground.r

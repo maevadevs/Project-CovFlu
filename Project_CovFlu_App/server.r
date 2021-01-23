@@ -252,6 +252,19 @@ shinyServer(function(input, output) {
   # Reactive Covid-19: 
   # Covid-19 all cases grouped by Race
   # ----------------------------------
+  # all_covid_cases_data_race <- reactive({
+  #   covid19CaseSurv_month_filtered() %>%
+  #     group_by(Race) %>%
+  #     summarise(
+  #       Count=sum(Count)
+  #     ) %>%
+  #     ungroup() %>%
+  #     mutate(
+  #       Percent=round(Count / sum(Count) * 100, 2)
+  #     ) %>%
+  #     arrange(Race)
+  # })
+  
   all_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
       covid_group_summarise_mutate(
@@ -265,6 +278,20 @@ shinyServer(function(input, output) {
   # Reactive Covid-19: 
   # Covid-19 confirmed cases grouped by Race
   # ----------------------------------------
+  # confirmed_covid_cases_data_race <- reactive({
+  #   covid19CaseSurv_month_filtered() %>%
+  #     filter(Confirmation.Status == "Laboratory-confirmed case") %>%
+  #     group_by(Race) %>%
+  #     summarise(
+  #       Count=sum(Count)
+  #     ) %>%
+  #     ungroup() %>%
+  #     mutate(
+  #       Percent=round(Count / sum(Count) * 100, 2)
+  #     ) %>%
+  #     arrange(Race)
+  # })
+  
   confirmed_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
       covid_filter_group_summarise_mutate(
@@ -273,7 +300,7 @@ shinyServer(function(input, output) {
         Count # summarise sum
       )
   })
-  
+    
   
   
   # Reactive Covid-19: 
@@ -309,12 +336,36 @@ shinyServer(function(input, output) {
   # ------------------------------------
   death_covid_cases_data_race <- reactive({
     covid19CaseSurv_month_filtered() %>%
-      covid_filter_group_summarise_mutate(
-        Death, "Yes", # filter
-        Race, # group_by / arrange
-        Count # summarise sum
-      )
+      filter(Death == "Yes") %>%
+      group_by(Race) %>%
+      summarise(
+        Count=sum(Count)
+      ) %>%
+      ungroup() %>%
+      mutate(
+        Percent=round(Count / sum(Count) * 100, 2)
+      ) %>%
+      arrange(Race)
   })
+  
+  # For the death weighted-ratio
+  death_covid_cases_data_race_with_case_weight <- reactive({
+    # Race | Count.death | Percent.death | Count.case
+    death_covid_cases_data_race() %>%
+      full_join(confirmed_covid_cases_data_race(), by="Race", suffix = c(".death", ".case")) %>%
+      mutate(Death.Case.Ratio=(Count.death/Count.case) * 100)
+  })
+  
+  
+  
+  # death_covid_cases_data_race <- reactive({
+  #   covid19CaseSurv_month_filtered() %>%
+  #     covid_filter_group_summarise_mutate(
+  #       Death, "Yes", # filter
+  #       Race, # group_by / arrange
+  #       Count # summarise sum
+  #     )
+  # })
   
   
   
@@ -350,7 +401,7 @@ shinyServer(function(input, output) {
     valueBox(
       paste0(comma(covid19TotalCasesCountIn2020, format="d")), # Formatted Value
       "Reported Cases", 
-      icon = icon("virus"), # Font-Awesome Icon
+      icon = icon("head-side-mask"), # Font-Awesome Icon
       color = "red"
     )
   })
@@ -1352,85 +1403,122 @@ shinyServer(function(input, output) {
   # ----------------------------------------------
   output$covid19CaseSurv_RacePlotSummary <- renderPlotly({
     
-    # First, all cases
-    plot <- plot_ly(
-      data=all_covid_cases_data_race(),
-      x=~Race, 
-      y=~Count,
-      type="bar",
-      orientation="v",
-      name='All Cases',
-      hoverinfo="text",
-      text=~paste0(
-        "Race: ", Race,
-        "<br>Count: ", comma(Count, format="d"),
-        "<br>Percent: ", round(Percent, 2), "%"
-      )
-    )
-    
-    # Next, Confirmed Cases
-    plot <- plot %>%
-      add_bars(
-        data=confirmed_covid_cases_data_race(),
-        x=~Race,
+    # Depending on the radio button choice
+    if (input$covidDeathRacePlotChoice == "Actual Death Counts") {
+      
+      # First, all cases
+      plot <- plot_ly(
+        data=all_covid_cases_data_race(),
+        x=~Race, 
         y=~Count,
-        name='Confirmed',
+        type="bar",
+        orientation="v",
+        name='All Cases',
         hoverinfo="text",
+        color= I('#EE6677'),
         text=~paste0(
           "Race: ", Race,
           "<br>Count: ", comma(Count, format="d"),
           "<br>Percent: ", round(Percent, 2), "%"
         )
       )
-    
-    # Next, Hospitalizations
-    plot <- plot %>%
-      add_bars(
-        data=hospitalization_covid_cases_data_race(),
-        x=~Race,
-        y=~Count,
-        name='Hospitalized',
+      
+      # Next, Confirmed Cases
+      plot <- plot %>%
+        add_bars(
+          data=confirmed_covid_cases_data_race(),
+          x=~Race,
+          y=~Count,
+          name='Confirmed',
+          hoverinfo="text",
+          color= I('#228833'),
+          text=~paste0(
+            "Race: ", Race,
+            "<br>Count: ", comma(Count, format="d"),
+            "<br>Percent: ", round(Percent, 2), "%"
+          )
+        )
+      
+      # Next, Hospitalizations
+      plot <- plot %>%
+        add_bars(
+          data=hospitalization_covid_cases_data_race(),
+          x=~Race,
+          y=~Count,
+          name='Hospitalized',
+          hoverinfo="text",
+          color= I('#4477AA'),
+          text=~paste0(
+            "Race: ", Race,
+            "<br>Count: ", comma(Count, format="d"),
+            "<br>Percent: ", round(Percent, 2), "%"
+          )
+        )
+      
+      # Next, ICU
+      plot <- plot %>%
+        add_bars(
+          data=icu_covid_cases_data_race(),
+          x=~Race,
+          y=~Count,
+          name='ICU',
+          hoverinfo="text",
+          color= I('#CCBB44'),
+          text=~paste0(
+            "Race: ", Race,
+            "<br>Count: ", comma(Count, format="d"),
+            "<br>Percent: ", round(Percent, 2), "%"
+          )
+        )
+      
+      # Next, Death Cases
+      plot <- plot %>%
+        add_trace(
+          data=death_covid_cases_data_race(),
+          x=~Race,
+          y=~Count,
+          name='Death',
+          hoverinfo="text",
+          color= I('#AA3377'),
+          text=~paste0(
+            "Race: ", Race,
+            "<br>Count: ", comma(Count, format="d"),
+            "<br>Percent: ", round(Percent, 2), "%"
+          )
+        )
+      
+      # Finally, add the layout of the plot
+      # Custom function in global
+      plot %>% add_plot_layout("Race") # xaxis title
+    }
+    else if (input$covidDeathRacePlotChoice == "Death Counts/Confirmed Cases") {
+      
+      # Plot Death Cases with weight
+      plot <- plot_ly(
+        # Race | Count.death | Percent.death | Count.case | Death.Case.Ratio
+        data=death_covid_cases_data_race_with_case_weight(),
+        x=~Race, 
+        y=~Death.Case.Ratio,
+        type="bar",
+        orientation="v",
+        name='Death / Confirmed Case',
         hoverinfo="text",
+        color= I('#AA3377'),
         text=~paste0(
           "Race: ", Race,
-          "<br>Count: ", comma(Count, format="d"),
-          "<br>Percent: ", round(Percent, 2), "%"
+          "<br>Death Count: ", comma(Count.death, format="d"),
+          "<br>Cases Count: ", comma(Count.case, format="d"),
+          "<br>Death/Case Ratio: ", round(Death.Case.Ratio, 2), "%"
         )
       )
-    
-    # Next, ICU
-    plot <- plot %>%
-      add_bars(
-        data=icu_covid_cases_data_race(),
-        x=~Race,
-        y=~Count,
-        name='ICU',
-        hoverinfo="text",
-        text=~paste0(
-          "Race: ", Race,
-          "<br>Count: ", comma(Count, format="d"),
-          "<br>Percent: ", round(Percent, 2), "%"
-        )
-      )
-    
-    # Next, Death Cases
-    plot <- plot %>%
-      add_trace(
-        data=death_covid_cases_data_race(),
-        x=~Race,
-        y=~Count,
-        name='Death',
-        hoverinfo="text",
-        text=~paste0(
-          "Race: ", Race,
-          "<br>Count: ", comma(Count, format="d"),
-          "<br>Percent: ", round(Percent, 2), "%"
-        )
-      )
-    
-    # Finally, add the layout of the plot
-    # Custom function in global
-    plot %>% add_plot_layout("Race") # xaxis title
+      
+      # Finally, add the layout of the plot
+      # Custom function in global
+      plot %>% add_plot_layout("Race") # xaxis title
+    } 
+    else {
+      print("This should not be reached. If you see this, something is wrong!")
+    }
   })
   
   
@@ -1500,6 +1588,7 @@ shinyServer(function(input, output) {
     
     # Next, Death Cases
     death_covid_cases_race <- death_covid_cases_data_race() %>%
+      # select(Count, Percent) %>%
       rename(
         `Death Cases`=Count,
         `% Death Cases`=Percent

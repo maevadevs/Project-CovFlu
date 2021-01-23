@@ -171,11 +171,76 @@ shinyUI(dashboardPage(
     # -------------------------
     
     dashboardSidebar(
-
+        
+        # Part 2 - Widgets Settings
+        # -------------------------
+        
+        tags$h4(
+            "Widgets Settings",
+            class="sidebar-group"
+        ),
+        
+        # Month Selection for Covid-19 Variables
+        selectInput(
+            "covid19CaseMonth",
+            "2020 Month for Covid-19 Data",
+            choices=month_name,
+            selected="December"
+        ),
+        
+        # Month Selection for Flu Variables
+        selectInput(
+            "fluDeaths2019CaseMonth",
+            "2019 Month for Influenza Data",
+            choices=month_name,
+            selected="December"
+        ),
+        
+        radioButtons(
+            "covidDeathRacePlotChoice",
+            "Show Covid-19 Deaths by Race As:",
+            choices = c("Actual Death Counts", "Death Counts/Confirmed Cases"),
+            selected = "Actual Death Counts",
+            inline = FALSE,
+            width = NULL
+        ),
+        
+        # Dropdown Select for Covid-19 Correlation Variables
+        # selectizeInput(
+        #     "covid19Dimensions",
+        #     "Covid-19 Dimensions",
+        #     Covid19Dimensions,
+        #     selected=c(),
+        #     multiple=TRUE,
+        #     options=list(maxItems=4)
+        # ),
+        
+        # # Date range selection for Covid-19 variables
+        # dateRangeInput(
+        #     "covid19CaseDateRange",
+        #     "Date Range for Covid-19 Data",
+        #     start = as.Date(covid19CaseSurv_mindate),
+        #     end = as.Date(covid19CaseSurv_maxdate),
+        #     min = as.Date(covid19CaseSurv_mindate),
+        #     max = as.Date(covid19CaseSurv_maxdate),
+        #     format = "yyyy-mm-dd",
+        #     startview = "month",
+        #     weekstart = 0,
+        #     language = "en",
+        #     separator = " to ",
+        #     width = NULL,
+        #     autoclose = TRUE
+        # ),
         
         
-        # Part 1 - Links to Pages and Dashboards
+        
+        # Part 2 - Links to Pages and Dashboards
         # --------------------------------------
+        
+        tags$h4(
+            "Pages",
+            class="sidebar-group"
+        ),
         
         sidebarMenu(
             
@@ -191,7 +256,7 @@ shinyUI(dashboardPage(
             
             # Link to the Overview Dashboard
             menuItem(
-                "Overview",
+                "By The Numbers",
                 tabName = "overviewDashboard",
                 icon = icon("dashboard")
             ),
@@ -244,60 +309,7 @@ shinyUI(dashboardPage(
                 tabName = "contactPage",
                 icon = icon("address-card")
             )
-        ),
-        
-        
-        
-        # Part 2 - Widgets Settings
-        # -------------------------
-
-        tags$h4(
-            "Widgets Settings",
-            class="widget-settings-title"
-        ),
-        
-        # Month Selection for Covid-19 Variables
-        selectInput(
-            "covid19CaseMonth",
-            "2020 Month for Covid-19 Data",
-            choices=month_name,
-            selected="December"
-        ),
-        
-        # Month Selection for Flu Variables
-        selectInput(
-            "fluDeaths2019CaseMonth",
-            "2019 Month for Influenza Data",
-            choices=month_name,
-            selected="December"
         )
-        
-        # Dropdown Select for Covid-19 Correlation Variables
-        # selectizeInput(
-        #     "covid19Dimensions",
-        #     "Covid-19 Dimensions",
-        #     Covid19Dimensions,
-        #     selected=c(),
-        #     multiple=TRUE,
-        #     options=list(maxItems=4)
-        # )
-        
-        # # Date range selection for Covid-19 variables
-        # dateRangeInput(
-        #     "covid19CaseDateRange",
-        #     "Date Range for Covid-19 Data",
-        #     start = as.Date(covid19CaseSurv_mindate),
-        #     end = as.Date(covid19CaseSurv_maxdate),
-        #     min = as.Date(covid19CaseSurv_mindate),
-        #     max = as.Date(covid19CaseSurv_maxdate),
-        #     format = "yyyy-mm-dd",
-        #     startview = "month",
-        #     weekstart = 0,
-        #     language = "en",
-        #     separator = " to ",
-        #     width = NULL,
-        #     autoclose = TRUE
-        # )
     ),
     # --- End of DASHBOARD SIDEBAR
     
@@ -356,7 +368,7 @@ shinyUI(dashboardPage(
                     # Page Title
                     column(
                         width=12,
-                        h2("About This App")
+                        h2("About Project CovFlu")
                     ),
                     
                     # Page Contents
@@ -371,24 +383,25 @@ shinyUI(dashboardPage(
                                     <p>Before <em>Covid-19</em> was drastically popularized however, we have been dealing with another deadly virus: The <em>Influenza</em> virus.</p>
                                     <p>As our communities have gotten used to Covid-19 over time, we have started to hear assumptions such as <em>the expansion of Covid-19 should slow down once we get to the Summer season</em>, or <em>Covid-19 is similar to the Flu.</em>
                                     Clearly, there are assumptions that the Influenza virus and Covid-19 virus share some similarities.</p>
-                                    <p>We wondered if there are similarities between the groups of population most affected by these two viruses in terms of demographics.</p>
+                                    <p>We wondered if there are similarities between the groups of population most affected by these two viruses in terms of demographics. And that is how the Project CovFlu was born.</p>
                                     <br>
                                     <h3>App Goals</h3>
-                                    <p>In this Shiny dashboard application, we analyze the demographics of those two populations using Covid-19 cases dataset from 2020 and Influenza mortality dataset from 2019. We compare them in terms of the following dimensions:</p>
-                                    <ul>
-                                      <li>Age Group</li>
-                                      <li>Gender</li>
-                                      <li>Race</li>
-                                      <li>Disease Cases</li>
-                                      <li>Disease Hosptalizations</li>
-                                      <li>Resulting Deaths</li>
-                                    </ul>
-                                    <p><strong>Our main driving data questions that we wanted to answer were:</strong></p>
+                                    <p><strong>Our main driving questions that we wanted to answer through analyzing the data were:</strong></p>
                                     <ul>
                                       <li><em>Which subgroups of the U.S. population are the most impacted by the Covid-19 virus?</em></li>
                                       <li><em>Which subgroups of the U.S. population are the most impacted by the Influenza virus?</em></li>
                                       <li><em>How do those two subgroups compare against each other?</em></li>
-                                    </ul>")
+                                    </ul>
+                                    <p>In this Shiny dashboard application, we analyze the demographics of those two subgroups using Covid-19 cases dataset from 2020 and Influenza mortality dataset from 2019. We compare them in terms of the following dimensions:</p>
+                                    <ul>
+                                      <li>Age Groups</li>
+                                      <li>Gender</li>
+                                      <li>Race</li>
+                                      <li>Sickness Cases (Covid-19 Only)</li>
+                                      <li>Hospitalizations (Covid-19 Only)</li>
+                                      <li>Deaths (Covid-19 and Influenza)</li>
+                                    </ul>
+                                    ")
                         ),
                         br(),
                         br()
@@ -413,7 +426,7 @@ shinyUI(dashboardPage(
                     # Dashboard Title
                     box(
                         width=12,
-                        h2("Overview")
+                        h2("By The Numbers")
                     ),
                     
                     # Value Boxes: Covid 19 Cases
@@ -752,7 +765,6 @@ shinyUI(dashboardPage(
                         width = 6, 
                         tags$div(
                             HTML(paste('<h4 class="plotTitle">Covid-19 <strong>Cases by Race</strong> in <strong>', textOutput("selectedCovidMonth5", inline=TRUE), '2020</strong><br><small>(Data Source: <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf" target="_blank">cdc.gov</a>)</small></h4>')),
-                            # tableOutput('covid19CaseSurv_AgeTableSummary')
                             plotlyOutput('covid19CaseSurv_RacePlotSummary')
                         )
                     ),

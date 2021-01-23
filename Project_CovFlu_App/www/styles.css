@@ -20,8 +20,8 @@
     color: rgb(205,205,205);
 }
 
-/* Widget Settgins Title */
-.widget-settings-title {
+/* sidebar-group */
+.sidebar-group {
   padding: 12px;
   padding-bottom: 0; 
   border-top: solid 1px rgb(70, 80, 90);
