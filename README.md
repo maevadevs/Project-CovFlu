@@ -28,3 +28,20 @@ In this Shiny dashboard application, we analyze the demographics of those two su
 - Sickness Cases (Covid-19 Only)
 - Hospitalizations (Covid-19 Only)
 - Deaths (Covid-19 and Influenza)
+
+## Data Sources
+
+Centers for Disease Control and Prevention, COVID-19 Response. *COVID-19 Case Surveillance Public Data Access, Summary, and Limitations*. (version date: December 31, 2020). Accessed January 18, 2021. https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf
+
+Centers for Disease Control and Prevention, National Center for Health Statistics. *Monthly provisional counts of deaths by age group, sex, and race/ethnicity for select causes of death.* (version date: December 17, 2020). Accessed January 18, 2021. https://data.cdc.gov/NCHS/Monthly-provisional-counts-of-deaths-by-age-group-/65mz-jvh5
+
+## Implementation
+
+[Check out the app here](https://maevadevs.shinyapps.io/Project_CovFlu/)
+
+## Screenshots
+
+<img src="screenshots/01.png" width=35%>
+<img src="screenshots/02.png" width=35%>
+<img src="screenshots/03.png" width=70%>
+<img src="screenshots/04.png" width=70%>
